@@ -1,0 +1,34 @@
+{
+  "login": {
+    "title": "Inicio de sesión - Técnico",
+    "subtitle": "Accede a tu cuenta profesional",
+    "phone_label": "Número de móvil",
+    "phone_placeholder": "Ingresa tu número de móvil",
+    "submit": "Enviar código",
+    "no_account": "¿Nuevo técnico?",
+    "register_link": "Postúlate ahora"
+  },
+  "register": {
+    "title": "Únete como técnico",
+    "subtitle": "Comienza a ganar con tus habilidades",
+    "name_label": "Nombre completo",
+    "name_placeholder": "Ingresa tu nombre completo",
+    "phone_label": "Número de móvil",
+    "phone_placeholder": "Ingresa tu número de móvil",
+    "skills_label": "Habilidad principal",
+    "skills_placeholder": "p. ej. Plomero, Electricista",
+    "experience_label": "Años de experiencia",
+    "city_label": "Ciudad",
+    "city_placeholder": "Ingresa tu ciudad",
+    "submit": "Postularme",
+    "have_account": "¿Ya estás registrado?",
+    "login_link": "Inicia sesión",
+    "terms": "Al postularte, aceptas nuestro {{terms}}",
+    "terms_link": "Acuerdo del técnico"
+  },
+  "approval": {
+    "title": "Postulación enviada",
+    "message": "Tu postulación está en revisión. Te notificaremos dentro de 24–48 horas.",
+    "contact_support": "Contactar soporte"
+  }
+}

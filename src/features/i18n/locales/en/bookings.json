@@ -1,0 +1,86 @@
+{
+  "tabs": {
+    "upcoming": "Upcoming",
+    "ongoing": "Ongoing",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
+  },
+  "list": {
+    "title": "My Bookings",
+    "empty_upcoming": "No upcoming bookings.",
+    "empty_ongoing": "No active bookings.",
+    "empty_completed": "No completed bookings yet.",
+    "empty_cancelled": "No cancelled bookings.",
+    "book_now": "Book a Service"
+  },
+  "card": {
+    "booking_id": "#{{id}}",
+    "scheduled_at": "{{date}} at {{time}}",
+    "professional": "Professional",
+    "view_details": "View Details"
+  },
+  "status": {
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "on_the_way": "On The Way",
+    "arrived": "Arrived",
+    "in_progress": "In Progress",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "rescheduled": "Rescheduled"
+  },
+  "detail": {
+    "title": "Booking Details",
+    "service": "Service",
+    "professional": "Professional",
+    "scheduled_at": "Scheduled At",
+    "address": "Service Address",
+    "payment": "Payment",
+    "payment_status_paid": "Paid",
+    "payment_status_pending": "Pending",
+    "payment_method_online": "Online",
+    "payment_method_cash": "Cash",
+    "invoice": "Download Invoice",
+    "notes": "Your Notes"
+  },
+  "actions": {
+    "cancel": "Cancel Booking",
+    "reschedule": "Reschedule",
+    "track": "Track Professional",
+    "chat": "Chat with Professional",
+    "call": "Call Professional",
+    "rate": "Rate & Review",
+    "rebook": "Book Again",
+    "raise_issue": "Raise an Issue"
+  },
+  "cancel": {
+    "title": "Cancel Booking",
+    "message": "Are you sure you want to cancel? Cancellation charges may apply.",
+    "reason_label": "Reason for Cancellation",
+    "reasons": {
+      "change_mind": "Changed my mind",
+      "wrong_booking": "Booked by mistake",
+      "professional_delay": "Professional is late",
+      "emergency": "Personal emergency",
+      "other": "Other"
+    },
+    "confirm": "Cancel Booking",
+    "keep": "Keep Booking"
+  },
+  "review": {
+    "title": "Rate Your Experience",
+    "rating_label": "Rate the Professional",
+    "review_label": "Write a Review",
+    "review_placeholder": "How was your experience?",
+    "submit": "Submit Review",
+    "skip": "Skip",
+    "thank_you": "Thank you for your feedback!"
+  },
+  "quote": {
+    "title": "Quotation",
+    "from_professional": "Quote from Professional",
+    "valid_until": "Valid until {{date}}",
+    "accept": "Accept Quote",
+    "decline": "Decline"
+  }
+}

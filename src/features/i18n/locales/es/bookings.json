@@ -1,0 +1,86 @@
+{
+  "tabs": {
+    "upcoming": "Próximas",
+    "ongoing": "En curso",
+    "completed": "Completadas",
+    "cancelled": "Canceladas"
+  },
+  "list": {
+    "title": "Mis reservas",
+    "empty_upcoming": "No hay próximas reservas.",
+    "empty_ongoing": "No hay reservas activas.",
+    "empty_completed": "Aún no hay reservas completadas.",
+    "empty_cancelled": "No hay reservas canceladas.",
+    "book_now": "Reservar un servicio"
+  },
+  "card": {
+    "booking_id": "#{{id}}",
+    "scheduled_at": "{{date}} a las {{time}}",
+    "professional": "Profesional",
+    "view_details": "Ver detalles"
+  },
+  "status": {
+    "pending": "Pendiente",
+    "confirmed": "Confirmada",
+    "on_the_way": "En camino",
+    "arrived": "Llegó",
+    "in_progress": "En progreso",
+    "completed": "Completada",
+    "cancelled": "Cancelada",
+    "rescheduled": "Reprogramada"
+  },
+  "detail": {
+    "title": "Detalles de la reserva",
+    "service": "Servicio",
+    "professional": "Profesional",
+    "scheduled_at": "Programada para",
+    "address": "Dirección del servicio",
+    "payment": "Pago",
+    "payment_status_paid": "Pagado",
+    "payment_status_pending": "Pendiente",
+    "payment_method_online": "En línea",
+    "payment_method_cash": "Efectivo",
+    "invoice": "Descargar factura",
+    "notes": "Tus notas"
+  },
+  "actions": {
+    "cancel": "Cancelar reserva",
+    "reschedule": "Reprogramar",
+    "track": "Rastrear profesional",
+    "chat": "Chatear con el profesional",
+    "call": "Llamar al profesional",
+    "rate": "Valorar y reseñar",
+    "rebook": "Reservar de nuevo",
+    "raise_issue": "Reportar un problema"
+  },
+  "cancel": {
+    "title": "Cancelar reserva",
+    "message": "¿Seguro que quieres cancelar? Pueden aplicarse cargos por cancelación.",
+    "reason_label": "Motivo de la cancelación",
+    "reasons": {
+      "change_mind": "Cambié de opinión",
+      "wrong_booking": "Reservé por error",
+      "professional_delay": "El profesional se está demorando",
+      "emergency": "Emergencia personal",
+      "other": "Otro"
+    },
+    "confirm": "Cancelar reserva",
+    "keep": "Mantener reserva"
+  },
+  "review": {
+    "title": "Valora tu experiencia",
+    "rating_label": "Valora al profesional",
+    "review_label": "Escribe una reseña",
+    "review_placeholder": "¿Cómo fue tu experiencia?",
+    "submit": "Enviar reseña",
+    "skip": "Omitir",
+    "thank_you": "¡Gracias por tu opinión!"
+  },
+  "quote": {
+    "title": "Cotización",
+    "from_professional": "Cotización del profesional",
+    "valid_until": "Válida hasta {{date}}",
+    "accept": "Aceptar cotización",
+    "decline": "Rechazar"
+  }
+}

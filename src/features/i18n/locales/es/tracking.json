@@ -1,0 +1,29 @@
+{
+  "title": "Rastrear profesional",
+  "statuses": {
+    "confirmed": "Reserva confirmada",
+    "on_the_way": "El profesional está en camino",
+    "arrived": "El profesional ha llegado",
+    "in_progress": "Trabajo en progreso",
+    "completed": "Trabajo completado"
+  },
+  "eta": {
+    "label": "Llegada estimada",
+    "value": "a {{minutes}} min",
+    "arrived": "Llegó"
+  },
+  "professional_card": {
+    "call": "Llamar",
+    "chat": "Chat",
+    "view_profile": "Ver perfil"
+  },
+  "map": {
+    "your_location": "Tu ubicación",
+    "professional_location": "Profesional",
+    "loading": "Cargando mapa..."
+  },
+  "issue": {
+    "not_moving": "¿El profesional no se mueve?",
+    "report": "Reportar problema"
+  }
+}

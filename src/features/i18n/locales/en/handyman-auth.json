@@ -1,0 +1,34 @@
+{
+  "login": {
+    "title": "Handyman Login",
+    "subtitle": "Login to your professional account",
+    "phone_label": "Mobile Number",
+    "phone_placeholder": "Enter your mobile number",
+    "submit": "Send OTP",
+    "no_account": "New handyman?",
+    "register_link": "Apply Now"
+  },
+  "register": {
+    "title": "Join as Handyman",
+    "subtitle": "Start earning with your skills",
+    "name_label": "Full Name",
+    "name_placeholder": "Enter your full name",
+    "phone_label": "Mobile Number",
+    "phone_placeholder": "Enter your mobile number",
+    "skills_label": "Primary Skill",
+    "skills_placeholder": "e.g. Plumber, Electrician",
+    "experience_label": "Years of Experience",
+    "city_label": "City",
+    "city_placeholder": "Enter your city",
+    "submit": "Apply",
+    "have_account": "Already registered?",
+    "login_link": "Login",
+    "terms": "By applying, you agree to our {{terms}}",
+    "terms_link": "Handyman Agreement"
+  },
+  "approval": {
+    "title": "Application Submitted",
+    "message": "Your application is under review. We'll notify you within 24–48 hours.",
+    "contact_support": "Contact Support"
+  }
+}

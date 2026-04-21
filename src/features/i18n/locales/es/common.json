@@ -1,0 +1,66 @@
+{
+  "actions": {
+    "ok": "OK",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "confirm": "Confirmar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "done": "Listo",
+    "submit": "Enviar",
+    "retry": "Reintentar",
+    "close": "Cerrar",
+    "view_all": "Ver todo",
+    "see_more": "Ver más",
+    "share": "Compartir",
+    "copy": "Copiar",
+    "refresh": "Actualizar"
+  },
+  "status": {
+    "loading": "Cargando...",
+    "refreshing": "Actualizando...",
+    "submitting": "Enviando...",
+    "saving": "Guardando...",
+    "no_results": "No se encontraron resultados",
+    "empty": "Aún no hay nada aquí"
+  },
+  "errors": {
+    "generic": "Algo salió mal. Inténtalo de nuevo.",
+    "network": "Sin conexión a internet. Revisa tu red.",
+    "timeout": "La solicitud expiró. Por favor reintenta.",
+    "unauthorized": "Sesión expirada. Por favor inicia sesión nuevamente.",
+    "server": "Error del servidor. Inténtalo más tarde.",
+    "not_found": "No encontrado."
+  },
+  "labels": {
+    "name": "Nombre",
+    "phone": "Número de teléfono",
+    "email": "Correo electrónico",
+    "address": "Dirección",
+    "date": "Fecha",
+    "time": "Hora",
+    "price": "Precio",
+    "total": "Total",
+    "status": "Estado",
+    "description": "Descripción",
+    "note": "Nota",
+    "rating": "Valoración",
+    "review": "Reseña",
+    "distance": "a {{value}} km"
+  },
+  "currency": "${{amount}}",
+  "tabs": {
+    "home": "Inicio",
+    "bookings": "Reservas",
+    "services": "Servicios",
+    "profile": "Perfil"
+  },
+  "notification": {
+    "permission_title": "Activar notificaciones",
+    "permission_message": "Mantente al día sobre tus reservas y ofertas.",
+    "allow": "Permitir",
+    "deny": "Ahora no"
+  }
+}

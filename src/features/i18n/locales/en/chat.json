@@ -1,0 +1,32 @@
+{
+  "header": {
+    "title": "Chat",
+    "online": "Online",
+    "offline": "Offline",
+    "typing": "Typing..."
+  },
+  "input": {
+    "placeholder": "Type a message...",
+    "send": "Send",
+    "attach": "Attach",
+    "image": "Send Photo"
+  },
+  "messages": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "delivered": "Delivered",
+    "seen": "Seen",
+    "failed": "Failed to send. Tap to retry.",
+    "image_caption": "Photo"
+  },
+  "empty": {
+    "title": "No Messages Yet",
+    "subtitle": "Start the conversation with your professional."
+  },
+  "system_messages": {
+    "booking_confirmed": "Booking confirmed. You can chat now.",
+    "professional_assigned": "{{name}} has been assigned to your booking.",
+    "booking_completed": "Booking completed. Please leave a review.",
+    "booking_cancelled": "Booking has been cancelled."
+  }
+}

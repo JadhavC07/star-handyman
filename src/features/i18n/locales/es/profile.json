@@ -1,0 +1,67 @@
+{
+  "title": "Mi perfil",
+  "header": "Cuenta",
+  "edit_profile_cta": "Editar perfil",
+  "sections": {
+    "account": "Cuenta",
+    "account_settings": "Configuración de cuenta",
+    "preferences": "Preferencias",
+    "preferences_support": "Preferencias y soporte",
+    "support": "Soporte",
+    "legal": "Legal"
+  },
+  "stats": {
+    "jobs_done": "Trabajos",
+    "wallet": "Billetera",
+    "member": "Miembro",
+    "gold_tier": "Oro"
+  },
+  "logout": {
+    "button": "Cerrar sesión",
+    "in_progress": "Cerrando sesión…",
+    "title": "Cerrar sesión",
+    "message": "¿Seguro que quieres cerrar sesión?",
+    "confirm": "Cerrar sesión",
+    "cancel": "Cancelar"
+  },
+  "items": {
+    "edit_profile": "Editar perfil",
+    "addresses": "Direcciones guardadas",
+    "payment_methods": "Métodos de pago",
+    "notifications": "Notificaciones",
+    "language": "Idioma",
+    "my_bookings": "Mis reservas",
+    "help": "Ayuda y soporte",
+    "faq": "Preguntas frecuentes",
+    "about": "Acerca de nosotros",
+    "terms": "Términos del servicio",
+    "privacy": "Política de privacidad",
+    "logout": "Cerrar sesión",
+    "delete_account": "Eliminar cuenta",
+    "version": "Versión {{version}}"
+  },
+  "addresses": {
+    "title": "Direcciones guardadas",
+    "add": "Agregar nueva dirección",
+    "home": "Casa",
+    "work": "Trabajo",
+    "other": "Otro",
+    "empty": "No hay direcciones guardadas.",
+    "default": "Predeterminada",
+    "set_default": "Marcar como predeterminada",
+    "delete": "Eliminar dirección"
+  },
+  "language": {
+    "title": "Seleccionar idioma",
+    "en": "English",
+    "es": "Español",
+    "success": "Idioma actualizado correctamente",
+    "restart_required": "La app se reiniciará para aplicar los cambios"
+  },
+  "delete_account": {
+    "title": "Eliminar cuenta",
+    "message": "Esto eliminará permanentemente tu cuenta y todos tus datos. Esta acción no se puede deshacer.",
+    "confirm": "Eliminar mi cuenta",
+    "cancel": "Conservar cuenta"
+  }
+}

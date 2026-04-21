@@ -1,0 +1,172 @@
+{
+  "dashboard": {
+    "greeting": "Hola, {{name}} 👋",
+    "status_online": "Estás en línea",
+    "status_offline": "Estás desconectado",
+    "go_online": "Conectarme",
+    "go_offline": "Desconectarme",
+    "today_earnings": "Ganancias de hoy",
+    "pending_jobs": "Trabajos pendientes",
+    "completed_today": "Completados hoy",
+    "rating": "Tu valoración"
+  },
+  "jobs": {
+    "title": "Trabajos",
+    "tabs": {
+      "new": "Nuevos",
+      "upcoming": "Próximos",
+      "ongoing": "En curso",
+      "completed": "Completados",
+      "cancelled": "Cancelados"
+    },
+    "empty_new": "No hay nuevas solicitudes de trabajo.",
+    "empty_upcoming": "No hay próximos trabajos.",
+    "empty_ongoing": "No hay trabajos activos.",
+    "card": {
+      "distance": "a {{km}} km",
+      "scheduled": "{{date}} a las {{time}}",
+      "accept": "Aceptar",
+      "decline": "Rechazar",
+      "view": "Ver detalles"
+    },
+    "accept": {
+      "title": "¿Aceptar trabajo?",
+      "message": "Estás aceptando la reserva de {{customer}} para {{service}}.",
+      "confirm": "Aceptar",
+      "cancel": "Cancelar"
+    },
+    "decline": {
+      "title": "Rechazar trabajo",
+      "reason_label": "Motivo",
+      "reasons": {
+        "busy": "Ya estoy ocupado",
+        "too_far": "Demasiado lejos",
+        "skill_mismatch": "Fuera de mi especialidad",
+        "other": "Otro"
+      },
+      "confirm": "Rechazar"
+    }
+  },
+  "job_detail": {
+    "title": "Detalles del trabajo",
+    "customer": "Cliente",
+    "service": "Servicio",
+    "address": "Ubicación del servicio",
+    "scheduled_at": "Programado para",
+    "notes": "Notas del cliente",
+    "navigate": "Navegar",
+    "call_customer": "Llamar al cliente",
+    "chat_customer": "Chat",
+    "start_job": "Iniciar trabajo",
+    "complete_job": "Marcar completado",
+    "raise_issue": "Reportar problema"
+  },
+  "earnings": {
+    "title": "Ganancias",
+    "total": "Ganancias totales",
+    "this_week": "Esta semana",
+    "this_month": "Este mes",
+    "pending_payout": "Pago pendiente",
+    "withdraw": "Retirar",
+    "history": "Historial de transacciones",
+    "empty": "Aún no hay ganancias.",
+    "breakdown": {
+      "service_fee": "Tarifa del servicio",
+      "platform_cut": "Comisión de la plataforma ({{percent}}%)",
+      "net": "Tus ganancias",
+      "bonus": "Bono",
+      "penalty": "Penalización"
+    }
+  },
+  "profile": {
+    "title": "Mi perfil",
+    "edit": "Editar perfil",
+    "skills": "Mis habilidades",
+    "documents": "Documentos",
+    "bank_details": "Datos bancarios",
+    "availability": "Mi disponibilidad",
+    "rating": "Mis valoraciones",
+    "reviews": "Reseñas de clientes",
+    "performance": "Rendimiento",
+    "save": "Guardar cambios",
+    "cancel": "Cancelar",
+    "saved": "Perfil actualizado",
+    "sections": {
+      "title": "Editar perfil",
+      "subtitle": "Mantén tus datos actualizados para recibir trabajos y pagos.",
+      "basic": {
+        "title": "Información básica",
+        "subtitle": "Tu nombre, foto y correo electrónico"
+      },
+      "legal": {
+        "title": "Verificación y legal",
+        "subtitle": "SIN, HST y datos del seguro"
+      },
+      "licenses": {
+        "title": "Licencias de oficio",
+        "subtitle": "Credenciales de plomería, electricidad y HVAC"
+      },
+      "bank": {
+        "title": "Datos bancarios",
+        "subtitle": "Dónde se depositan tus ganancias"
+      },
+      "other": {
+        "title": "Preferencias de trabajo",
+        "subtitle": "Habilidades, disponibilidad y zona de servicio"
+      }
+    },
+    "fields": {
+      "name": "Nombre completo",
+      "email": "Correo electrónico",
+      "avatar": "Foto de perfil",
+      "change_photo": "Cambiar foto",
+      "sin_number": "Número SIN",
+      "sin_hint": "Número de Seguridad Social de 9 dígitos",
+      "sin_on_file": "Hay un SIN registrado. Vuelve a ingresarlo para actualizar.",
+      "account_on_file": "Hay un número de cuenta registrado. Vuelve a ingresarlo para actualizar.",
+      "hst_number": "Número HST",
+      "insurance_company": "Compañía de seguros",
+      "insurance_policy_number": "Número de póliza",
+      "insurance_expiry_date": "Vencimiento de la póliza (AAAA-MM-DD)",
+      "plumbing_license": "Licencia de plomería",
+      "electrical_license": "Licencia eléctrica",
+      "hvac_license": "Licencia HVAC",
+      "bank_name": "Nombre del banco",
+      "bank_account_holder_name": "Titular de la cuenta",
+      "bank_account_number": "Número de cuenta",
+      "bank_routing_number": "Número de ruta / tránsito",
+      "bank_branch": "Sucursal",
+      "bank_account_type": "Tipo de cuenta",
+      "skills": "Habilidades",
+      "skills_hint": "Separadas por comas, ej. Plomería, Instalación",
+      "availability": "Disponibilidad",
+      "service_radius_km": "Radio de servicio (km)",
+      "experience_years": "Años de experiencia",
+      "notes": "Notas"
+    },
+    "account_type": {
+      "savings": "Ahorros",
+      "chequing": "Cheques",
+      "current": "Corriente"
+    },
+    "availability_options": {
+      "full-time": "Tiempo completo",
+      "part-time": "Medio tiempo",
+      "on-call": "A demanda"
+    },
+    "empty": "Sin especificar"
+  },
+  "availability": {
+    "title": "Establecer disponibilidad",
+    "days": {
+      "mon": "Lunes",
+      "tue": "Martes",
+      "wed": "Miércoles",
+      "thu": "Jueves",
+      "fri": "Viernes",
+      "sat": "Sábado",
+      "sun": "Domingo"
+    },
+    "save": "Guardar horario"
+  }
+}

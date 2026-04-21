@@ -1,0 +1,29 @@
+{
+  "title": "Track Professional",
+  "statuses": {
+    "confirmed": "Booking Confirmed",
+    "on_the_way": "Professional is on the way",
+    "arrived": "Professional has arrived",
+    "in_progress": "Work in progress",
+    "completed": "Work completed"
+  },
+  "eta": {
+    "label": "Estimated Arrival",
+    "value": "{{minutes}} mins away",
+    "arrived": "Arrived"
+  },
+  "professional_card": {
+    "call": "Call",
+    "chat": "Chat",
+    "view_profile": "View Profile"
+  },
+  "map": {
+    "your_location": "Your Location",
+    "professional_location": "Professional",
+    "loading": "Loading map..."
+  },
+  "issue": {
+    "not_moving": "Professional not moving?",
+    "report": "Report Issue"
+  }
+}

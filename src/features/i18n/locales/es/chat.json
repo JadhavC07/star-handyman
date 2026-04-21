@@ -1,0 +1,32 @@
+{
+  "header": {
+    "title": "Chat",
+    "online": "En línea",
+    "offline": "Desconectado",
+    "typing": "Escribiendo..."
+  },
+  "input": {
+    "placeholder": "Escribe un mensaje...",
+    "send": "Enviar",
+    "attach": "Adjuntar",
+    "image": "Enviar foto"
+  },
+  "messages": {
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "delivered": "Entregado",
+    "seen": "Visto",
+    "failed": "Error al enviar. Toca para reintentar.",
+    "image_caption": "Foto"
+  },
+  "empty": {
+    "title": "Aún no hay mensajes",
+    "subtitle": "Inicia la conversación con tu profesional."
+  },
+  "system_messages": {
+    "booking_confirmed": "Reserva confirmada. Ya puedes chatear.",
+    "professional_assigned": "{{name}} ha sido asignado a tu reserva.",
+    "booking_completed": "Reserva completada. Por favor deja una reseña.",
+    "booking_cancelled": "La reserva ha sido cancelada."
+  }
+}

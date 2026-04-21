@@ -1,0 +1,172 @@
+{
+  "dashboard": {
+    "greeting": "Hey, {{name}} 👋",
+    "status_online": "You're Online",
+    "status_offline": "You're Offline",
+    "go_online": "Go Online",
+    "go_offline": "Go Offline",
+    "today_earnings": "Today's Earnings",
+    "pending_jobs": "Pending Jobs",
+    "completed_today": "Completed Today",
+    "rating": "Your Rating"
+  },
+  "jobs": {
+    "title": "Jobs",
+    "tabs": {
+      "new": "New",
+      "upcoming": "Upcoming",
+      "ongoing": "Ongoing",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "empty_new": "No new job requests.",
+    "empty_upcoming": "No upcoming jobs.",
+    "empty_ongoing": "No active jobs.",
+    "card": {
+      "distance": "{{km}} km away",
+      "scheduled": "{{date}} at {{time}}",
+      "accept": "Accept",
+      "decline": "Decline",
+      "view": "View Details"
+    },
+    "accept": {
+      "title": "Accept Job?",
+      "message": "You are accepting the booking from {{customer}} for {{service}}.",
+      "confirm": "Accept",
+      "cancel": "Cancel"
+    },
+    "decline": {
+      "title": "Decline Job",
+      "reason_label": "Reason",
+      "reasons": {
+        "busy": "Already busy",
+        "too_far": "Too far from location",
+        "skill_mismatch": "Outside my skill set",
+        "other": "Other"
+      },
+      "confirm": "Decline"
+    }
+  },
+  "job_detail": {
+    "title": "Job Details",
+    "customer": "Customer",
+    "service": "Service",
+    "address": "Service Location",
+    "scheduled_at": "Scheduled At",
+    "notes": "Customer Notes",
+    "navigate": "Navigate",
+    "call_customer": "Call Customer",
+    "chat_customer": "Chat",
+    "start_job": "Start Job",
+    "complete_job": "Mark Completed",
+    "raise_issue": "Raise Issue"
+  },
+  "earnings": {
+    "title": "Earnings",
+    "total": "Total Earnings",
+    "this_week": "This Week",
+    "this_month": "This Month",
+    "pending_payout": "Pending Payout",
+    "withdraw": "Withdraw",
+    "history": "Transaction History",
+    "empty": "No earnings yet.",
+    "breakdown": {
+      "service_fee": "Service Fee",
+      "platform_cut": "Platform Cut ({{percent}}%)",
+      "net": "Your Earnings",
+      "bonus": "Bonus",
+      "penalty": "Penalty"
+    }
+  },
+  "profile": {
+    "title": "My Profile",
+    "edit": "Edit Profile",
+    "skills": "My Skills",
+    "documents": "Documents",
+    "bank_details": "Bank Details",
+    "availability": "My Availability",
+    "rating": "My Ratings",
+    "reviews": "Customer Reviews",
+    "performance": "Performance",
+    "save": "Save Changes",
+    "cancel": "Cancel",
+    "saved": "Profile updated",
+    "sections": {
+      "title": "Edit Profile",
+      "subtitle": "Keep your details up to date to receive jobs and payments.",
+      "basic": {
+        "title": "Basic Information",
+        "subtitle": "Your name, photo, and contact email"
+      },
+      "legal": {
+        "title": "Verification & Legal",
+        "subtitle": "SIN, HST and insurance details"
+      },
+      "licenses": {
+        "title": "Trade Licenses",
+        "subtitle": "Plumbing, electrical, and HVAC credentials"
+      },
+      "bank": {
+        "title": "Bank Details",
+        "subtitle": "Where your earnings get deposited"
+      },
+      "other": {
+        "title": "Work Preferences",
+        "subtitle": "Skills, availability and service area"
+      }
+    },
+    "fields": {
+      "name": "Full Name",
+      "email": "Email Address",
+      "avatar": "Profile Photo",
+      "change_photo": "Change Photo",
+      "sin_number": "SIN Number",
+      "sin_hint": "9-digit Social Insurance Number",
+      "sin_on_file": "A SIN is on file. Re-enter to update.",
+      "account_on_file": "An account number is on file. Re-enter to update.",
+      "hst_number": "HST Number",
+      "insurance_company": "Insurance Company",
+      "insurance_policy_number": "Policy Number",
+      "insurance_expiry_date": "Policy Expiry (YYYY-MM-DD)",
+      "plumbing_license": "Plumbing License",
+      "electrical_license": "Electrical License",
+      "hvac_license": "HVAC License",
+      "bank_name": "Bank Name",
+      "bank_account_holder_name": "Account Holder Name",
+      "bank_account_number": "Account Number",
+      "bank_routing_number": "Routing / Transit Number",
+      "bank_branch": "Branch",
+      "bank_account_type": "Account Type",
+      "skills": "Skills",
+      "skills_hint": "Comma-separated, e.g. Plumbing, Installation",
+      "availability": "Availability",
+      "service_radius_km": "Service Radius (km)",
+      "experience_years": "Years of Experience",
+      "notes": "Notes"
+    },
+    "account_type": {
+      "savings": "Savings",
+      "chequing": "Chequing",
+      "current": "Current"
+    },
+    "availability_options": {
+      "full-time": "Full-time",
+      "part-time": "Part-time",
+      "on-call": "On-call"
+    },
+    "empty": "Not set"
+  },
+  "availability": {
+    "title": "Set Availability",
+    "days": {
+      "mon": "Monday",
+      "tue": "Tuesday",
+      "wed": "Wednesday",
+      "thu": "Thursday",
+      "fri": "Friday",
+      "sat": "Saturday",
+      "sun": "Sunday"
+    },
+    "save": "Save Schedule"
+  }
+}

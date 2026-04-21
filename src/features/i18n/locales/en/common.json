@@ -1,0 +1,66 @@
+{
+  "actions": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "save": "Save",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "done": "Done",
+    "submit": "Submit",
+    "retry": "Retry",
+    "close": "Close",
+    "view_all": "View All",
+    "see_more": "See More",
+    "share": "Share",
+    "copy": "Copy",
+    "refresh": "Refresh"
+  },
+  "status": {
+    "loading": "Loading...",
+    "refreshing": "Refreshing...",
+    "submitting": "Submitting...",
+    "saving": "Saving...",
+    "no_results": "No results found",
+    "empty": "Nothing here yet"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "network": "No internet connection. Check your network.",
+    "timeout": "Request timed out. Please retry.",
+    "unauthorized": "Session expired. Please login again.",
+    "server": "Server error. Please try later.",
+    "not_found": "Not found."
+  },
+  "labels": {
+    "name": "Name",
+    "phone": "Phone Number",
+    "email": "Email",
+    "address": "Address",
+    "date": "Date",
+    "time": "Time",
+    "price": "Price",
+    "total": "Total",
+    "status": "Status",
+    "description": "Description",
+    "note": "Note",
+    "rating": "Rating",
+    "review": "Review",
+    "distance": "{{value}} km away"
+  },
+  "currency": "${{amount}}",
+  "tabs": {
+    "home": "Home",
+    "bookings": "Bookings",
+    "services": "Services",
+    "profile": "Profile"
+  },
+  "notification": {
+    "permission_title": "Enable Notifications",
+    "permission_message": "Stay updated on your bookings and offers.",
+    "allow": "Allow",
+    "deny": "Not Now"
+  }
+}
