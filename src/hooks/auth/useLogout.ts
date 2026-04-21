@@ -1,6 +1,5 @@
-import { AuthService } from "@/src/features/auth/auth.service";
-import { HandymanAuthService } from "@/src/features/auth/handyman-auth.service";
 import { useAuthStore } from "@/src/features/auth/auth.store";
+import { HandymanAuthService } from "@/src/features/auth/handyman-auth.service";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useLogout = () => {
@@ -10,12 +9,7 @@ export const useLogout = () => {
   return useMutation({
     // Logout error is expected when token is already expired; handled locally.
     meta: { silent: true },
-    mutationFn: () => {
-      const role = useAuthStore.getState().user?.role;
-      return role === "specialist"
-        ? HandymanAuthService.logout()
-        : AuthService.logout();
-    },
+    mutationFn: () => HandymanAuthService.logout(),
     onSuccess: async () => {
       await logout();
       qc.clear();

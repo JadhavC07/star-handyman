@@ -6,26 +6,12 @@ import { storage } from './mmkv';
 import enCommon from '../features/i18n/locales/en/common.json';
 import enAuth from '../features/i18n/locales/en/auth.json';
 import enHandymanAuth from '../features/i18n/locales/en/handyman-auth.json';
-import enHome from '../features/i18n/locales/en/home.json';
-import enServices from '../features/i18n/locales/en/services.json';
-import enBookings from '../features/i18n/locales/en/bookings.json';
-import enChat from '../features/i18n/locales/en/chat.json';
-import enTracking from '../features/i18n/locales/en/tracking.json';
-import enSearch from '../features/i18n/locales/en/search.json';
-import enProfessional from '../features/i18n/locales/en/professional.json';
 import enProfile from '../features/i18n/locales/en/profile.json';
 import enHandyman from '../features/i18n/locales/en/handyman.json';
 
 import esCommon from '../features/i18n/locales/es/common.json';
 import esAuth from '../features/i18n/locales/es/auth.json';
 import esHandymanAuth from '../features/i18n/locales/es/handyman-auth.json';
-import esHome from '../features/i18n/locales/es/home.json';
-import esServices from '../features/i18n/locales/es/services.json';
-import esBookings from '../features/i18n/locales/es/bookings.json';
-import esChat from '../features/i18n/locales/es/chat.json';
-import esTracking from '../features/i18n/locales/es/tracking.json';
-import esSearch from '../features/i18n/locales/es/search.json';
-import esProfessional from '../features/i18n/locales/es/professional.json';
 import esProfile from '../features/i18n/locales/es/profile.json';
 import esHandyman from '../features/i18n/locales/es/handyman.json';
 
@@ -38,13 +24,6 @@ export const NAMESPACES = [
   'common',
   'auth',
   'handyman-auth',
-  'home',
-  'services',
-  'bookings',
-  'chat',
-  'tracking',
-  'search',
-  'professional',
   'profile',
   'handyman',
 ] as const;
@@ -70,13 +49,6 @@ i18n.use(initReactI18next).init({
       common: enCommon,
       auth: enAuth,
       'handyman-auth': enHandymanAuth,
-      home: enHome,
-      services: enServices,
-      bookings: enBookings,
-      chat: enChat,
-      tracking: enTracking,
-      search: enSearch,
-      professional: enProfessional,
       profile: enProfile,
       handyman: enHandyman,
     },
@@ -84,13 +56,6 @@ i18n.use(initReactI18next).init({
       common: esCommon,
       auth: esAuth,
       'handyman-auth': esHandymanAuth,
-      home: esHome,
-      services: esServices,
-      bookings: esBookings,
-      chat: esChat,
-      tracking: esTracking,
-      search: esSearch,
-      professional: esProfessional,
       profile: esProfile,
       handyman: esHandyman,
     },
