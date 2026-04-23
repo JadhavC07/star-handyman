@@ -25,7 +25,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const RESEND_SECONDS = 30;
 
 const HandymanLoginScreen: React.FC = () => {
-  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [otpDigits, setOtpDigits] = useState(["", "", "", "", "", ""]);
   const [otpSent, setOtpSent] = useState(false);
   const [focusedField, setFocused] = useState<string | null>(null);
@@ -41,14 +41,18 @@ const HandymanLoginScreen: React.FC = () => {
     return () => clearInterval(id);
   }, [resendTimer]);
 
-  const onAuthSuccess = (user: { id: number; email: string; name: string }) => {
+  // Phone state holds 10 digits; we prepend "+1" when sending to the API.
+  const sanitizedPhone = phone.replace(/\D/g, "").slice(0, 10);
+  const fullPhone = `+1${sanitizedPhone}`;
+
+  const onAuthSuccess = (_user: { id: number; name: string }) => {
     router.replace("/(handyman)/(tabs)");
   };
 
   const handleSendOtp = () => {
-    //only email needed for login send-otp
+    // /serviceman/send-otp: {phone}
     sendOtp.mutate(
-      { email: email.trim() },
+      { phone: fullPhone },
       {
         onSuccess: () => {
           setOtpSent(true);
@@ -61,9 +65,9 @@ const HandymanLoginScreen: React.FC = () => {
   };
 
   const handleVerifyOtp = () => {
-    // uses useHandymanLogin with {email, otp}
+    // /serviceman/login: {phone, otp}
     login.mutate(
-      { email: email.trim(), otp: otpDigits.join("") },
+      { phone: fullPhone, otp: otpDigits.join("") },
       { onSuccess: (data) => onAuthSuccess(data.user) },
     );
   };
@@ -85,7 +89,7 @@ const HandymanLoginScreen: React.FC = () => {
     }
   };
 
-  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const phoneValid = sanitizedPhone.length === 10;
   const otpComplete = otpDigits.every((d) => d !== "");
   const isLoading = sendOtp.isPending || login.isPending;
   const activeError = sendOtp.error ?? login.error;
@@ -123,37 +127,40 @@ const HandymanLoginScreen: React.FC = () => {
               </Text>
               <Text style={styles.cardSub}>
                 {otpSent
-                  ? `OTP sent to ${email.trim()}`
+                  ? `OTP sent to ${fullPhone}`
                   : "Login with OTP to manage your jobs"}
               </Text>
 
-              {/* Email */}
+              {/* Phone */}
               {!otpSent && (
                 <View
                   style={[
                     styles.inputWrapper,
-                    focusedField === "email" && styles.inputFocused,
+                    focusedField === "phone" && styles.inputFocused,
                   ]}
                 >
                   <Feather
-                    name="mail"
+                    name="phone"
                     size={18}
                     color={
-                      focusedField === "email"
+                      focusedField === "phone"
                         ? theme.colors.primary
                         : theme.colors.textMuted
                     }
                   />
+                  <Text style={styles.countryCode}>+1</Text>
+                  <View style={styles.separator} />
                   <TextInput
-                    placeholder="Email Address"
+                    placeholder="Phone Number"
                     placeholderTextColor={theme.colors.textMuted}
                     style={styles.input}
-                    value={email}
-                    onChangeText={setEmail}
-                    keyboardType="email-address"
+                    value={sanitizedPhone}
+                    onChangeText={(t) => setPhone(t.replace(/\D/g, "").slice(0, 10))}
+                    keyboardType="phone-pad"
                     autoCapitalize="none"
                     autoCorrect={false}
-                    onFocus={() => setFocused("email")}
+                    maxLength={10}
+                    onFocus={() => setFocused("phone")}
                     onBlur={() => setFocused(null)}
                   />
                 </View>
@@ -205,7 +212,7 @@ const HandymanLoginScreen: React.FC = () => {
                         login.reset();
                       }}
                     >
-                      <Text style={styles.changeLink}>Change email</Text>
+                      <Text style={styles.changeLink}>Change number</Text>
                     </TouchableOpacity>
                   </View>
                 </>
@@ -219,10 +226,10 @@ const HandymanLoginScreen: React.FC = () => {
                 <TouchableOpacity
                   style={[
                     styles.mainBtn,
-                    !emailValid && styles.mainBtnDisabled,
+                    !phoneValid && styles.mainBtnDisabled,
                   ]}
                   onPress={handleSendOtp}
-                  disabled={!emailValid || isLoading}
+                  disabled={!phoneValid || isLoading}
                   activeOpacity={0.85}
                 >
                   {isLoading ? (
@@ -257,17 +264,6 @@ const HandymanLoginScreen: React.FC = () => {
                   onPress={() => router.push("/(handyman-auth)/register")}
                 >
                   <Text style={styles.linkText}>Sign Up</Text>
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.swapFooter}>
-                <Text style={styles.footerText}>
-                  Looking to book a service?{" "}
-                </Text>
-                <TouchableOpacity
-                  onPress={() => router.replace("/(auth)/login")}
-                >
-                  <Text style={styles.linkText}>Customer login</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -361,6 +357,19 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
   },
   inputFocused: { borderColor: theme.colors.primary },
+  countryCode: {
+    ...theme.typography.body,
+    fontSize: 15,
+    color: theme.colors.textPrimary,
+    fontWeight: "500",
+    marginLeft: 10,
+  },
+  separator: {
+    width: 1,
+    height: 22,
+    backgroundColor: theme.colors.border,
+    marginHorizontal: 10,
+  },
   input: {
     flex: 1,
     marginLeft: 10,

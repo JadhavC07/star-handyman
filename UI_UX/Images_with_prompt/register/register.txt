@@ -1,0 +1,38 @@
+Mobile app registration screen UI for a handyman service provider.
+
+Use consistent design system:
+- Primary color: #FF7A00
+- Secondary color: #1E2A78
+- White background
+- Rounded mobile layout
+- Clean, minimal UI
+
+Layout:
+- Title: "Create Account"
+- Subtitle: "Join as a handyman"
+
+Form fields:
+- Full Name
+- Email
+- Phone Number
+- Password
+- Confirm Password
+
+Optional:
+- Skills selection (chips: Plumbing, Electrical, etc.)
+
+Actions:
+- Primary button: "Create Account" (orange)
+- Secondary: "Continue with Google"
+
+Footer:
+- "Already have an account? Sign In"
+
+Style:
+- Rounded inputs (24px)
+- Pill-shaped buttons
+- Soft shadows
+- Clean spacing
+
+Output:
+- High resolution, pixel-perfect mobile UI

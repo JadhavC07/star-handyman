@@ -83,18 +83,18 @@ export interface RegisterPayload {
 
 
 export interface ServicemanSendOtpPayload {
-  email: string
+  phone: string
   name?: string
 }
 
 export interface ServicemanRegisterPayload {
-  email: string
+  phone: string
   otp:   string
   name:  string
 }
 
 export interface ServicemanLoginPayload {
-  email: string
+  phone: string
   otp:   string
 }
 

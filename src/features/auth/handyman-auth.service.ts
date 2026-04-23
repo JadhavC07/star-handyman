@@ -31,7 +31,7 @@ export const HandymanAuthService = {
         const debugOtp = (r.data as any)?.debug_otp;
         if (__DEV__ && debugOtp) {
           console.log(
-            `${TAG} 🔑 DEBUG OTP for ${payload.email}: ${debugOtp}`,
+            `${TAG} 🔑 DEBUG OTP for ${payload.phone}: ${debugOtp}`,
           );
         }
         return r.data;
@@ -48,7 +48,7 @@ export const HandymanAuthService = {
 
   login: (payload: ServicemanLoginPayload) => {
     devLog("login →", API_ENDPOINTS.HANDYMAN_AUTH.LOGIN, {
-      email: payload.email,
+      phone: payload.phone,
     });
     return client
       .post<AuthResponse>(API_ENDPOINTS.HANDYMAN_AUTH.LOGIN, payload)

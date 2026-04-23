@@ -1,0 +1,58 @@
+Mobile app earnings screen UI for a handyman service provider.
+
+Use consistent design system:
+- Primary color: #FF7A00 (orange)
+- Secondary color: #1E2A78 (dark blue)
+- Background: clean white
+- Rounded mobile layout
+- Modern, minimal, premium UI
+
+Layout:
+
+Top section:
+- Title: "Earnings"
+- Large bold total earnings (e.g., $1,240)
+- Small subtitle: "This month"
+
+Toggle:
+- Segmented control: Weekly | Monthly
+- Active state highlighted in orange pill
+
+Chart section:
+- Clean line or bar chart
+- Smooth curves or rounded bars
+- Light grid lines
+- Highlight key data points
+
+Summary cards (horizontal or grid):
+- Completed Jobs (e.g., 24)
+- Pending Payments (e.g., $320)
+- Withdrawn (e.g., $900)
+
+Cards style:
+- Rounded corners (24px)
+- Soft shadows
+- Minimal icons
+
+Transaction list:
+- Each item includes:
+   - Job title (Fix sink, Install fan)
+   - Date and time
+   - Amount earned
+   - Status (Paid / Pending)
+
+Style:
+- 8pt spacing system
+- Pill-shaped elements
+- Clear typography hierarchy
+- Soft shadows, subtle elevation
+- High readability (fintech-grade UI)
+
+Lighting:
+- Bright, soft UI lighting
+- No blur, no noise
+
+Output:
+- Ultra sharp, 4K resolution
+- Pixel-perfect mobile UI
+- Professional app (App Store quality)

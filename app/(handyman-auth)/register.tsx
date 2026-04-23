@@ -23,13 +23,13 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // Minimal OTP-based registration per new API spec.
-// send-otp: {email, name}; register: {email, name, otp}. Phone is collected later via profile update.
+// send-otp: {phone, name}; register: {phone, name, otp}. Email is collected later via profile update.
 
 const RESEND_SECONDS = 30;
 
 const HandymanRegisterScreen: React.FC = () => {
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [otpDigits, setOtpDigits] = useState(["", "", "", "", "", ""]);
   const [otpSent, setOtpSent] = useState(false);
   const [focusedField, setFocused] = useState<string | null>(null);
@@ -45,17 +45,21 @@ const HandymanRegisterScreen: React.FC = () => {
     return () => clearInterval(id);
   }, [resendTimer]);
 
-  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
-  const infoValid = name.trim().length >= 2 && emailValid;
+  // Phone state holds 10 digits; we prepend "+1" when sending to the API.
+  const sanitizedPhone = phone.replace(/\D/g, "").slice(0, 10);
+  const fullPhone = `+1${sanitizedPhone}`;
+
+  const phoneValid = sanitizedPhone.length === 10;
+  const infoValid = name.trim().length >= 2 && phoneValid;
   const otpComplete = otpDigits.every((d) => d !== "");
   const isLoading = sendOtp.isPending || register.isPending;
   const activeError = sendOtp.error ?? register.error;
   const errorMessage = activeError ? extractErrorMessage(activeError) : null;
 
   const handleSendOtp = () => {
-    // /serviceman/send-otp: {email, name}
+    // /serviceman/send-otp: {phone, name}
     sendOtp.mutate(
-      { email: email.trim(), name: name.trim() },
+      { phone: fullPhone, name: name.trim() },
       {
         onSuccess: () => {
           setOtpSent(true);
@@ -68,11 +72,11 @@ const HandymanRegisterScreen: React.FC = () => {
   };
 
   const handleRegister = () => {
-    // /serviceman/register: {email, name, otp}
+    // /serviceman/register: {phone, name, otp}
     register.mutate(
       {
         name: name.trim(),
-        email: email.trim(),
+        phone: fullPhone,
         otp: otpDigits.join(""),
       },
       { onSuccess: () => router.replace("/(handyman)/(tabs)") },
@@ -152,7 +156,7 @@ const HandymanRegisterScreen: React.FC = () => {
               </Text>
               <Text style={styles.cardSub}>
                 {otpSent
-                  ? `OTP sent to ${email.trim()}`
+                  ? `OTP sent to ${fullPhone}`
                   : "Enter your details to start accepting jobs"}
               </Text>
 
@@ -173,19 +177,24 @@ const HandymanRegisterScreen: React.FC = () => {
                     />
                   </View>
 
-                  {/* Email */}
-                  <View style={[wrapperStyle("email"), { marginTop: 14 }]}>
-                    <Feather name="mail" size={18} color={iconColor("email")} />
+                  {/* Phone */}
+                  <View style={[wrapperStyle("phone"), { marginTop: 14 }]}>
+                    <Feather name="phone" size={18} color={iconColor("phone")} />
+                    <Text style={styles.countryCode}>+1</Text>
+                    <View style={styles.separator} />
                     <TextInput
-                      placeholder="Email Address"
+                      placeholder="Phone Number"
                       placeholderTextColor={theme.colors.textMuted}
                       style={styles.input}
-                      value={email}
-                      onChangeText={setEmail}
-                      keyboardType="email-address"
+                      value={sanitizedPhone}
+                      onChangeText={(t) =>
+                        setPhone(t.replace(/\D/g, "").slice(0, 10))
+                      }
+                      keyboardType="phone-pad"
                       autoCapitalize="none"
                       autoCorrect={false}
-                      {...inputProps("email")}
+                      maxLength={10}
+                      {...inputProps("phone")}
                     />
                   </View>
 
@@ -234,7 +243,6 @@ const HandymanRegisterScreen: React.FC = () => {
                         textAlign="center"
                         onFocus={() => setFocused(`otp-${i}`)}
                         onBlur={() => setFocused(null)}
-                        
                       />
                     ))}
                   </View>
@@ -296,17 +304,6 @@ const HandymanRegisterScreen: React.FC = () => {
                   onPress={() => router.push("/(handyman-auth)/login")}
                 >
                   <Text style={styles.linkText}>Login</Text>
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.swapFooter}>
-                <Text style={styles.footerText}>
-                  Looking to book a service?{" "}
-                </Text>
-                <TouchableOpacity
-                  onPress={() => router.replace("/(auth)/register")}
-                >
-                  <Text style={styles.linkText}>Customer sign up</Text>
                 </TouchableOpacity>
               </View>
             </View>

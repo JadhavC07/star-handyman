@@ -1,0 +1,53 @@
+Mobile app jobs screen UI for a handyman service provider.
+
+Use the same design system as onboarding screen:
+- Primary color: #FF7A00 (orange)
+- Secondary color: #1E2A78 (dark blue)
+- White background
+- Rounded mobile layout
+- Clean, minimal, modern UI
+
+Layout:
+- Top header: "My Jobs"
+- Tabs below header:
+   - New | Ongoing | Completed
+   - Active tab highlighted with orange underline or pill
+
+Main content:
+- Vertical list of job cards with rounded corners (24px radius)
+- Soft shadows for depth
+
+Each job card includes:
+- Job title (Fix leaking sink, Repair door lock, Install ceiling fan)
+- Customer name (optional small text)
+- Address + distance (e.g., 2.5 km away)
+- Time posted (e.g., 1h ago)
+- Status badge:
+   - New → orange
+   - Ongoing → blue
+   - Completed → gray
+
+Action buttons:
+- New: "Accept" (orange button)
+- Ongoing: "Start Job" or "Continue" (dark blue button)
+- Completed: "View Details" (outlined or muted)
+
+Additional UI:
+- Clean separators or spacing between cards
+- Optional empty state illustration (no jobs)
+
+Style:
+- 8pt spacing system
+- Pill-shaped buttons
+- Soft shadows, subtle elevation
+- High readability typography
+- iOS + Android hybrid design
+
+Lighting:
+- Bright, soft UI lighting
+- No blur, no noise
+
+Output:
+- Ultra sharp, 4K resolution
+- Pixel-perfect mobile UI
+- App Store quality design

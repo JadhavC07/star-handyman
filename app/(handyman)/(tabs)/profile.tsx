@@ -1,4 +1,3 @@
-import AppHeader from "@/src/components/common/AppHeader";
 import { GroupedList, ListRow } from "@/src/components/ui";
 import { useHandymanUpdateProfile } from "@/src/hooks/auth/useHandymanAuth";
 import { useLogout } from "@/src/hooks/auth/useLogout";
@@ -87,19 +86,27 @@ export default function Profile() {
 
   return (
     <SafeAreaView style={ss.safe} edges={["top", "bottom"]}>
-      <AppHeader
-        title={t("profile.title")}
-        rightComponent={
-          <TouchableOpacity onPress={goToEdit}>
-            <Feather name="edit-2" size={20} color={theme.colors.textPrimary} />
-          </TouchableOpacity>
-        }
-      />
-
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={ss.scroll}
       >
+        {/* iOS large-title header */}
+        <View style={ss.header}>
+          <Text style={ss.largeTitle}>{t("profile.title")}</Text>
+          <TouchableOpacity
+            onPress={goToEdit}
+            style={ss.headerAction}
+            activeOpacity={0.6}
+          >
+            <Feather
+              name="edit-2"
+              size={16}
+              color={theme.colors.ios.blue}
+            />
+            <Text style={ss.headerActionText}>Edit</Text>
+          </TouchableOpacity>
+        </View>
+
         {/* ── Avatar + Info ─────────────────────────────── */}
         <View style={ss.profileCard}>
           <TouchableOpacity
@@ -280,8 +287,31 @@ const StatItem = ({ label, value }: { label: string; value: string }) => (
 );
 
 const ss = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: theme.colors.background },
+  safe: { flex: 1, backgroundColor: theme.colors.ios.systemGroupedBackground },
   scroll: { paddingHorizontal: theme.spacing.xl },
+
+  header: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "space-between",
+    paddingTop: theme.spacing.sm,
+    paddingBottom: theme.spacing.md,
+  },
+  largeTitle: {
+    ...theme.typography.ios.largeTitle,
+    color: theme.colors.textPrimary,
+  },
+  headerAction: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingVertical: 6,
+  },
+  headerActionText: {
+    ...theme.typography.ios.body,
+    color: theme.colors.ios.blue,
+    fontWeight: "500",
+  },
 
   profileCard: {
     flexDirection: "row",
@@ -289,7 +319,7 @@ const ss = StyleSheet.create({
     backgroundColor: theme.colors.surface,
     padding: theme.spacing.xl,
     borderRadius: theme.radius.xl,
-    marginTop: theme.spacing.lg,
+    marginTop: theme.spacing.xs,
     ...theme.shadows.small,
   },
   avatarWrapper: { position: "relative" },

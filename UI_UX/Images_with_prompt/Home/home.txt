@@ -1,0 +1,44 @@
+Mobile app home screen UI for a handyman service provider.
+
+Use the same visual style as an onboarding screen with:
+- Bright orange bottom section (#FF7A00)
+- Clean white background
+- Rounded mobile phone frame
+- Modern, minimal UI
+
+Layout:
+- Top header with greeting: "Good morning, John"
+- Small circular profile avatar (top right)
+- Availability toggle switch (Online / Offline)
+
+Main section:
+- Title: "New Jobs Nearby"
+- List of job cards with rounded corners and soft shadows
+
+Each job card contains:
+- Job title (Fix sink, Repair door, Install fan)
+- Location and distance (2.3 km away)
+- Budget price ($40–$80)
+- Time posted (2h ago)
+- CTA button: "Accept Job" (dark blue #1E2A78 or orange)
+
+Additional:
+- Small earnings summary card:
+   - "Today Earnings: $120"
+   - Clean card style
+
+Design style:
+- Consistent spacing (8pt grid)
+- Rounded corners (20–30px)
+- Soft shadows, subtle depth
+- Clean typography, high readability
+- iOS + Android hybrid design
+
+Lighting:
+- Bright, soft UI lighting
+- No blur, no noise
+
+Output:
+- Ultra sharp, 4K resolution
+- Pixel-perfect mobile UI
+- Professional app design (App Store quality)

@@ -1,0 +1,36 @@
+Mobile app login screen UI for a handyman service provider.
+
+Use consistent design system:
+- Primary color: #FF7A00 (orange)
+- Secondary color: #1E2A78 (dark blue)
+- White background
+- Rounded mobile layout
+- Minimal, modern UI
+
+Layout:
+- Top: small illustration or logo (optional handyman theme)
+- Title: "Welcome Back"
+- Subtitle: "Login to continue"
+
+Form:
+- Input field: Email
+- Input field: Password
+- Show/hide password icon
+
+Actions:
+- Primary button: "Sign In" (orange, pill-shaped)
+- Secondary options:
+   - "Forgot Password?"
+   - "Sign in with Google / Facebook"
+
+Footer:
+- "Don’t have an account? Sign Up"
+
+Style:
+- Rounded inputs (20–24px radius)
+- Soft shadows
+- Clean spacing (8pt grid)
+- High readability typography
+
+Output:
+- Ultra sharp, pixel-perfect mobile UI

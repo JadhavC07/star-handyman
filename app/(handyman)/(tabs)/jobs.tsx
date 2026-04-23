@@ -1,4 +1,3 @@
-import AppHeader from "@/src/components/common/AppHeader";
 import { Button, SegmentedControl } from "@/src/components/ui";
 import { haptic } from "@/src/lib/haptics";
 import { theme } from "@/src/theme/theme";
@@ -32,10 +31,13 @@ interface HandymanJob {
   notes?: string;
 }
 
-const SEGMENTS: readonly { value: JobSegment; label: string }[] = [
+const SEGMENT_DEFS: readonly {
+  value: JobSegment;
+  label: string;
+}[] = [
   { value: "incoming", label: "Incoming" },
   { value: "active", label: "Active" },
-  { value: "completed", label: "Completed" },
+  { value: "completed", label: "Done" },
 ] as const;
 
 const MOCK_JOBS: HandymanJob[] = [
@@ -115,6 +117,24 @@ export default function HandymanJobs() {
     [segment],
   );
 
+  const counts = useMemo(
+    () => ({
+      incoming: MOCK_JOBS.filter((j) => j.status === "incoming").length,
+      active: MOCK_JOBS.filter((j) => j.status === "active").length,
+      completed: MOCK_JOBS.filter((j) => j.status === "completed").length,
+    }),
+    [],
+  );
+
+  const segments = useMemo(
+    () =>
+      SEGMENT_DEFS.map((s) => ({
+        value: s.value,
+        label: counts[s.value] > 0 ? `${s.label} (${counts[s.value]})` : s.label,
+      })),
+    [counts],
+  );
+
   const handleAccept = (_id: string) => haptic.success();
   const handleDecline = (_id: string) => haptic.warning();
   const handleStart = (_id: string) => haptic.tap();
@@ -124,11 +144,15 @@ export default function HandymanJobs() {
 
   return (
     <SafeAreaView style={ss.safe} edges={["top"]}>
-      <AppHeader title="Jobs" />
+      {/* iOS large-title header */}
+      <View style={ss.header}>
+        <Text style={ss.greeting}>Your workload</Text>
+        <Text style={ss.largeTitle}>Jobs</Text>
+      </View>
 
       <View style={ss.segmentWrap}>
         <SegmentedControl<JobSegment>
-          segments={SEGMENTS}
+          segments={segments}
           value={segment}
           onChange={setSegment}
         />
@@ -406,7 +430,22 @@ const EMPTY_COPY: Record<
 // ── Styles ────────────────────────────────────────────────
 
 const ss = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: theme.colors.background },
+  safe: { flex: 1, backgroundColor: theme.colors.ios.systemGroupedBackground },
+
+  header: {
+    paddingHorizontal: theme.spacing.xl,
+    paddingTop: theme.spacing.sm,
+    paddingBottom: theme.spacing.sm,
+  },
+  greeting: {
+    ...theme.typography.ios.subhead,
+    color: theme.colors.ios.secondaryLabel,
+    marginBottom: 2,
+  },
+  largeTitle: {
+    ...theme.typography.ios.largeTitle,
+    color: theme.colors.textPrimary,
+  },
 
   segmentWrap: {
     paddingHorizontal: theme.spacing.xl,

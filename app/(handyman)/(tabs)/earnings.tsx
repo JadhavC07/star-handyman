@@ -1,48 +1,65 @@
-import AppHeader from "@/src/components/common/AppHeader";
 import { SegmentedControl } from "@/src/components/ui";
 import { theme } from "@/src/theme/theme";
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import React, { useMemo, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-type Period = "week" | "month" | "year";
+type Period = "weekly" | "monthly";
 
 const PERIODS: readonly { value: Period; label: string }[] = [
-  { value: "week", label: "This Week" },
-  { value: "month", label: "This Month" },
-  { value: "year", label: "This Year" },
+  { value: "weekly", label: "Weekly" },
+  { value: "monthly", label: "Monthly" },
 ] as const;
 
 interface PeriodSummary {
   total: number;
-  jobsCompleted: number;
-  tips: number;
-  pendingPayout: number;
-  changePct: number; // vs previous period
+  completedJobs: number;
+  pendingPayments: number;
+  withdrawn: number;
+  chart: { label: string; value: number; highlight?: boolean }[];
+  chartMax: number;
 }
 
 const SUMMARIES: Record<Period, PeriodSummary> = {
-  week: {
-    total: 420,
-    jobsCompleted: 7,
-    tips: 35,
-    pendingPayout: 120,
-    changePct: 12.4,
+  weekly: {
+    total: 320,
+    completedJobs: 6,
+    pendingPayments: 80,
+    withdrawn: 200,
+    chart: [
+      { label: "M", value: 40 },
+      { label: "T", value: 65 },
+      { label: "W", value: 30 },
+      { label: "T", value: 85, highlight: true },
+      { label: "F", value: 55 },
+      { label: "S", value: 45 },
+      { label: "S", value: 0 },
+    ],
+    chartMax: 100,
   },
-  month: {
-    total: 1820,
-    jobsCompleted: 29,
-    tips: 140,
-    pendingPayout: 280,
-    changePct: 8.1,
-  },
-  year: {
-    total: 18450,
-    jobsCompleted: 312,
-    tips: 1620,
-    pendingPayout: 280,
-    changePct: 24.5,
+  monthly: {
+    total: 1240,
+    completedJobs: 24,
+    pendingPayments: 320,
+    withdrawn: 900,
+    chart: [
+      { label: "W1", value: 320 },
+      { label: "W2", value: 480, highlight: true },
+      { label: "W3", value: 260 },
+      { label: "W4", value: 180 },
+      { label: "W5", value: 380 },
+      { label: "W6", value: 220 },
+      { label: "W7", value: 420, highlight: true },
+    ],
+    chartMax: 500,
   },
 };
 
@@ -57,7 +74,7 @@ interface Transaction {
 }
 
 const MOCK_TRANSACTIONS: Record<Period, Transaction[]> = {
-  week: [
+  weekly: [
     {
       id: "w1",
       service: "Leaky Faucet Repair",
@@ -95,7 +112,7 @@ const MOCK_TRANSACTIONS: Record<Period, Transaction[]> = {
       icon: "lightning-bolt",
     },
   ],
-  month: [
+  monthly: [
     {
       id: "m1",
       service: "Leaky Faucet Repair",
@@ -133,59 +150,52 @@ const MOCK_TRANSACTIONS: Record<Period, Transaction[]> = {
       icon: "fan",
     },
   ],
-  year: [
-    {
-      id: "y1",
-      service: "AC Installation",
-      customer: "David Carter",
-      date: "Apr 14, 2026",
-      amount: 120,
-      status: "paid",
-      icon: "air-conditioner",
-    },
-    {
-      id: "y2",
-      service: "Full Bathroom Refit",
-      customer: "Liam O'Connor",
-      date: "Mar 22, 2026",
-      amount: 450,
-      status: "paid",
-      icon: "shower",
-    },
-    {
-      id: "y3",
-      service: "Kitchen Rewire",
-      customer: "Nora Patel",
-      date: "Feb 09, 2026",
-      amount: 320,
-      status: "paid",
-      icon: "lightning-bolt",
-    },
-  ],
 };
 
+const CHART_HEIGHT = 150;
+const GRID_LINES = 4;
+
 export default function HandymanEarnings() {
-  const [period, setPeriod] = useState<Period>("week");
+  const [period, setPeriod] = useState<Period>("monthly");
 
   const summary = SUMMARIES[period];
   const transactions = useMemo(() => MOCK_TRANSACTIONS[period], [period]);
 
-  const periodLabel =
-    period === "week"
-      ? "this week"
-      : period === "month"
-        ? "this month"
-        : "this year";
+  const periodLabel = period === "weekly" ? "This Week" : "This Month";
 
   return (
     <SafeAreaView style={ss.safe} edges={["top"]}>
-      <AppHeader title="Earnings" />
-
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={ss.scroll}
       >
-        {/* Period selector */}
+        {/* ── Nav header: back + title ──────────────────────── */}
+        <View style={ss.navBar}>
+          <TouchableOpacity
+            style={ss.navBtn}
+            onPress={() => router.back()}
+            hitSlop={8}
+            activeOpacity={0.6}
+          >
+            <Ionicons
+              name="chevron-back"
+              size={26}
+              color={theme.colors.textPrimary}
+            />
+          </TouchableOpacity>
+          <Text style={ss.navTitle}>Earnings</Text>
+          <View style={ss.navBtn} />
+        </View>
+
+        {/* ── Hero total (centered) ─────────────────────────── */}
+        <View style={ss.hero}>
+          <Text style={ss.heroAmount}>
+            ${summary.total.toLocaleString()}
+          </Text>
+          <Text style={ss.heroLabel}>{periodLabel}</Text>
+        </View>
+
+        {/* ── Period selector ──────────────────────────────── */}
         <SegmentedControl<Period>
           segments={PERIODS}
           value={period}
@@ -193,64 +203,42 @@ export default function HandymanEarnings() {
           style={ss.segment}
         />
 
-        {/* Hero total */}
-        <View style={ss.heroCard}>
-          <Text style={ss.heroLabel}>Total earned {periodLabel}</Text>
-          <Text style={ss.heroAmount}>${summary.total.toLocaleString()}</Text>
-          <View style={ss.trendRow}>
-            <View
-              style={[
-                ss.trendPill,
-                summary.changePct >= 0 ? ss.trendUp : ss.trendDown,
-              ]}
-            >
-              <Feather
-                name={summary.changePct >= 0 ? "trending-up" : "trending-down"}
-                size={12}
-                color={
-                  summary.changePct >= 0
-                    ? theme.colors.success
-                    : theme.colors.error
-                }
-              />
-              <Text
-                style={[
-                  ss.trendText,
-                  summary.changePct >= 0 ? ss.trendUpText : ss.trendDownText,
-                ]}
-              >
-                {summary.changePct >= 0 ? "+" : ""}
-                {summary.changePct.toFixed(1)}%
-              </Text>
-            </View>
-            <Text style={ss.trendCaption}>vs previous period</Text>
-          </View>
+        {/* ── Bar chart card ───────────────────────────────── */}
+        <View style={ss.chartCard}>
+          <BarChart data={summary.chart} max={summary.chartMax} />
         </View>
 
-        {/* Breakdown */}
-        <View style={ss.breakdownRow}>
-          <BreakdownCard
-            icon="briefcase-outline"
-            label="Jobs"
-            value={String(summary.jobsCompleted)}
+        {/* ── Summary cards ────────────────────────────────── */}
+        <View style={ss.summaryList}>
+          <SummaryCard
+            icon="checkmark-done-outline"
+            iconColor={theme.colors.primary}
+            iconBg={theme.colors.primarySubtle}
+            label="Completed Jobs"
+            value={String(summary.completedJobs)}
           />
-          <BreakdownCard
-            icon="cash-outline"
-            label="Tips"
-            value={`$${summary.tips}`}
-          />
-          <BreakdownCard
+          <SummaryCard
             icon="time-outline"
-            label="Pending"
-            value={`$${summary.pendingPayout}`}
-            accent
+            iconColor={theme.colors.warning}
+            iconBg={theme.colors.warningSubtle}
+            label="Pending Payments"
+            value={`$${summary.pendingPayments}`}
+          />
+          <SummaryCard
+            icon="arrow-down-circle-outline"
+            iconColor={theme.colors.success}
+            iconBg={`${theme.colors.ios.green}18`}
+            label="Withdrawn"
+            value={`$${summary.withdrawn.toLocaleString()}`}
           />
         </View>
 
-        {/* Transactions */}
+        {/* ── Transactions ─────────────────────────────────── */}
         <View style={ss.sectionHeader}>
-          <Text style={ss.sectionLabel}>Transactions</Text>
-          <Text style={ss.sectionCount}>{transactions.length}</Text>
+          <Text style={ss.sectionTitle}>Transactions</Text>
+          <TouchableOpacity activeOpacity={0.6} hitSlop={8}>
+            <Text style={ss.sectionAction}>See All</Text>
+          </TouchableOpacity>
         </View>
 
         {transactions.length === 0 ? (
@@ -286,32 +274,84 @@ export default function HandymanEarnings() {
   );
 }
 
-// ── Breakdown Card ────────────────────────────────────────
+// ── Bar Chart (view-based, no chart lib) ──────────────────
 
-function BreakdownCard({
-  icon,
-  label,
-  value,
-  accent = false,
+function BarChart({
+  data,
+  max,
 }: {
-  icon: keyof typeof Ionicons.glyphMap;
-  label: string;
-  value: string;
-  accent?: boolean;
+  data: { label: string; value: number; highlight?: boolean }[];
+  max: number;
 }) {
   return (
-    <View style={ss.breakdownCard}>
-      <View
-        style={[ss.breakdownIcon, accent ? ss.breakdownIconAccent : undefined]}
-      >
-        <Ionicons
-          name={icon}
-          size={16}
-          color={accent ? theme.colors.warning : theme.colors.primary}
-        />
+    <View style={ss.chartWrap}>
+      <View style={ss.chartBody}>
+        {/* Grid lines */}
+        <View style={ss.gridLines} pointerEvents="none">
+          {Array.from({ length: GRID_LINES }).map((_, i) => (
+            <View key={i} style={ss.gridLine} />
+          ))}
+        </View>
+
+        {/* Bars */}
+        <View style={ss.barsRow}>
+          {data.map((d, i) => {
+            const h = max > 0 ? Math.max(4, (d.value / max) * CHART_HEIGHT) : 4;
+            return (
+              <View key={i} style={ss.barCol}>
+                <View
+                  style={[
+                    ss.bar,
+                    {
+                      height: h,
+                      backgroundColor: d.highlight
+                        ? theme.colors.primary
+                        : theme.colors.primarySubtle,
+                    },
+                  ]}
+                />
+              </View>
+            );
+          })}
+        </View>
       </View>
-      <Text style={ss.breakdownValue}>{value}</Text>
-      <Text style={ss.breakdownLabel}>{label}</Text>
+
+      {/* X-axis labels */}
+      <View style={ss.barsRow}>
+        {data.map((d, i) => (
+          <View key={i} style={ss.barCol}>
+            <Text style={ss.barLabel}>{d.label}</Text>
+          </View>
+        ))}
+      </View>
+    </View>
+  );
+}
+
+// ── Summary Card ──────────────────────────────────────────
+
+function SummaryCard({
+  icon,
+  iconColor,
+  iconBg,
+  label,
+  value,
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  iconColor: string;
+  iconBg: string;
+  label: string;
+  value: string;
+}) {
+  return (
+    <View style={ss.summaryCard}>
+      <View style={[ss.summaryIcon, { backgroundColor: iconBg }]}>
+        <Ionicons name={icon} size={20} color={iconColor} />
+      </View>
+      <View style={ss.summaryText}>
+        <Text style={ss.summaryLabel}>{label}</Text>
+        <Text style={ss.summaryValue}>{value}</Text>
+      </View>
     </View>
   );
 }
@@ -341,9 +381,21 @@ function TransactionRow({ tx }: { tx: Transaction }) {
         <Text style={ss.txAmount}>
           {isPending ? "" : "+"}${tx.amount.toFixed(0)}
         </Text>
-        <Text style={[ss.txStatus, isPending ? ss.txPending : ss.txPaid]}>
-          {isPending ? "Pending" : "Paid"}
-        </Text>
+        <View
+          style={[
+            ss.txBadge,
+            isPending ? ss.txBadgePending : ss.txBadgePaid,
+          ]}
+        >
+          <Text
+            style={[
+              ss.txBadgeText,
+              isPending ? ss.txBadgeTextPending : ss.txBadgeTextPaid,
+            ]}
+          >
+            {isPending ? "Pending" : "Paid"}
+          </Text>
+        </View>
       </View>
     </View>
   );
@@ -352,85 +404,126 @@ function TransactionRow({ tx }: { tx: Transaction }) {
 // ── Styles ────────────────────────────────────────────────
 
 const ss = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: theme.colors.background },
+  safe: { flex: 1, backgroundColor: theme.colors.ios.systemGroupedBackground },
   scroll: { paddingHorizontal: theme.spacing.xl },
 
-  segment: { marginTop: theme.spacing.sm, marginBottom: theme.spacing.lg },
+  // Nav header
+  navBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingTop: theme.spacing.sm,
+    paddingBottom: theme.spacing.md,
+  },
+  navBtn: {
+    width: 36,
+    height: 36,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  navTitle: {
+    ...theme.typography.ios.headline,
+    color: theme.colors.textPrimary,
+    fontWeight: "600",
+  },
 
   // Hero
-  heroCard: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.radius.xl,
-    padding: theme.spacing.xl,
-    ...theme.shadows.small,
-  },
-  heroLabel: {
-    ...theme.typography.ios.footnote,
-    color: theme.colors.ios.secondaryLabel,
-    marginBottom: 6,
+  hero: {
+    alignItems: "center",
+    marginTop: theme.spacing.sm,
+    marginBottom: theme.spacing.lg,
   },
   heroAmount: {
-    ...theme.typography.ios.largeTitle,
+    fontSize: 44,
+    fontWeight: "700",
     color: theme.colors.textPrimary,
-    marginBottom: 10,
+    letterSpacing: -1,
   },
-  trendRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  trendPill: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: theme.radius.full,
-  },
-  trendUp: { backgroundColor: theme.colors.successSubtle },
-  trendDown: { backgroundColor: theme.colors.errorSubtle },
-  trendText: { fontSize: 12, fontWeight: "600" },
-  trendUpText: { color: theme.colors.success },
-  trendDownText: { color: theme.colors.error },
-  trendCaption: {
-    ...theme.typography.ios.caption1,
-    color: theme.colors.textMuted,
+  heroLabel: {
+    ...theme.typography.ios.subhead,
+    color: theme.colors.ios.secondaryLabel,
+    marginTop: 4,
   },
 
-  // Breakdown
-  breakdownRow: {
+  segment: { marginBottom: theme.spacing.lg },
+
+  // Chart
+  chartCard: {
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.radius.xl,
+    padding: theme.spacing.lg,
+    ...theme.shadows.small,
+  },
+  chartWrap: {},
+  chartBody: {
+    height: CHART_HEIGHT,
+    justifyContent: "flex-end",
+    position: "relative",
+  },
+  gridLines: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: "space-between",
+  },
+  gridLine: {
+    height: theme.hairline,
+    backgroundColor: theme.colors.borderLight,
+  },
+  barsRow: {
     flexDirection: "row",
-    gap: 10,
+    alignItems: "flex-end",
+    justifyContent: "space-between",
+    height: "100%",
+  },
+  barCol: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "flex-end",
+  },
+  bar: {
+    width: 18,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+    borderBottomLeftRadius: 4,
+    borderBottomRightRadius: 4,
+  },
+  barLabel: {
+    ...theme.typography.ios.caption2,
+    color: theme.colors.textMuted,
+    marginTop: 8,
+  },
+
+  // Summary cards
+  summaryList: {
+    gap: theme.spacing.sm,
     marginTop: theme.spacing.lg,
   },
-  breakdownCard: {
-    flex: 1,
+  summaryCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.spacing.md,
     backgroundColor: theme.colors.surface,
     borderRadius: theme.radius.lg,
     paddingVertical: 14,
-    paddingHorizontal: 12,
+    paddingHorizontal: theme.spacing.md,
     ...theme.shadows.small,
   },
-  breakdownIcon: {
-    width: 30,
-    height: 30,
+  summaryIcon: {
+    width: 40,
+    height: 40,
     borderRadius: theme.radius.md,
-    backgroundColor: theme.colors.primarySubtle,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 10,
   },
-  breakdownIconAccent: {
-    backgroundColor: theme.colors.warningSubtle,
-  },
-  breakdownValue: {
-    ...theme.typography.ios.title3,
-    color: theme.colors.textPrimary,
-  },
-  breakdownLabel: {
+  summaryText: { flex: 1 },
+  summaryLabel: {
     ...theme.typography.ios.caption1,
-    color: theme.colors.textMuted,
-    marginTop: 2,
+    color: theme.colors.ios.secondaryLabel,
+    marginBottom: 2,
+  },
+  summaryValue: {
+    ...theme.typography.ios.headline,
+    color: theme.colors.textPrimary,
+    fontWeight: "700",
   },
 
   // Section header
@@ -441,13 +534,14 @@ const ss = StyleSheet.create({
     marginTop: theme.spacing.xxl,
     marginBottom: theme.spacing.md,
   },
-  sectionLabel: {
-    ...theme.typography.ios.headline,
+  sectionTitle: {
+    ...theme.typography.ios.title3,
     color: theme.colors.textPrimary,
   },
-  sectionCount: {
-    ...theme.typography.ios.footnote,
-    color: theme.colors.textMuted,
+  sectionAction: {
+    ...theme.typography.ios.subhead,
+    color: theme.colors.ios.blue,
+    fontWeight: "500",
   },
 
   // Transactions list
@@ -465,8 +559,8 @@ const ss = StyleSheet.create({
     paddingHorizontal: 4,
   },
   txIcon: {
-    width: 36,
-    height: 36,
+    width: 40,
+    height: 40,
     borderRadius: theme.radius.md,
     backgroundColor: theme.colors.primarySubtle,
     alignItems: "center",
@@ -483,23 +577,33 @@ const ss = StyleSheet.create({
     color: theme.colors.textMuted,
     marginTop: 2,
   },
-  txRight: { alignItems: "flex-end" },
+  txRight: { alignItems: "flex-end", gap: 4 },
   txAmount: {
     ...theme.typography.ios.subhead,
     color: theme.colors.textPrimary,
     fontWeight: "700",
   },
-  txStatus: {
+  txBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: theme.radius.full,
+  },
+  txBadgePaid: {
+    backgroundColor: `${theme.colors.ios.green}18`,
+  },
+  txBadgePending: {
+    backgroundColor: theme.colors.warningSubtle,
+  },
+  txBadgeText: {
     fontSize: 11,
     fontWeight: "600",
-    marginTop: 2,
   },
-  txPaid: { color: theme.colors.success },
-  txPending: { color: theme.colors.warning },
+  txBadgeTextPaid: { color: theme.colors.success },
+  txBadgeTextPending: { color: theme.colors.warning },
   txDivider: {
     height: theme.hairline,
     backgroundColor: theme.colors.borderLight,
-    marginLeft: 48,
+    marginLeft: 52,
   },
 
   // Empty
