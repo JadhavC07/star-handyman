@@ -1,7 +1,12 @@
-import { Button, SegmentedControl } from "@/src/components/ui";
+import { EmptyState } from "@/src/components/common/EmptyState";
+import { JobCard } from "@/src/components/common/JobCard";
+import { JobStatus } from "@/src/components/common/JobStatusPill";
+import { PromoCard } from "@/src/components/common/PromoCard";
+import { SegmentedControl } from "@/src/components/ui";
 import { haptic } from "@/src/lib/haptics";
 import { theme } from "@/src/theme/theme";
-import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
   FlatList,
@@ -13,101 +18,161 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-type JobStatus = "incoming" | "active" | "completed";
 type JobSegment = JobStatus;
 
-interface HandymanJob {
+export interface HandymanJob {
   id: string;
   service: string;
+  category: string;
   customer: string;
   customerAvatar: string;
+  customerRating: number;
+  customerReviews: number;
+  customerPhone: string;
   address: string;
   distanceKm: number;
+  postedAgo: string;
   date: string;
   time: string;
+  timeRange: string;
+  priceMin: number;
+  priceMax: number;
   price: number;
+  paymentType: string;
+  budgetType: string;
   status: JobStatus;
   icon: keyof typeof MaterialCommunityIcons.glyphMap;
   notes?: string;
+  photos?: string[];
 }
 
-const SEGMENT_DEFS: readonly {
-  value: JobSegment;
-  label: string;
-}[] = [
+export const MOCK_JOBS: HandymanJob[] = [
+  {
+    id: "1",
+    service: "Fix leaking sink",
+    category: "Plumbing",
+    customer: "Sarah Johnson",
+    customerAvatar: "https://i.pravatar.cc/150?u=sarah",
+    customerRating: 4.7,
+    customerReviews: 120,
+    customerPhone: "+1 312 555 0101",
+    address: "45 Pine Street, Chicago, IL 60601",
+    distanceKm: 2.5,
+    postedAgo: "1h ago",
+    date: "May 31, 2025",
+    time: "10:00 AM",
+    timeRange: "10:00 AM – 02:00 PM",
+    priceMin: 50,
+    priceMax: 80,
+    price: 45,
+    paymentType: "Fixed Price",
+    budgetType: "Customer Budget",
+    status: "incoming",
+    icon: "pipe",
+    notes:
+      "The kitchen sink is leaking from the pipe connection. Need someone to fix it as soon as possible.",
+    photos: [
+      "https://images.unsplash.com/photo-1585704032915-c3400305e979?w=400",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400",
+      "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400",
+    ],
+  },
+  {
+    id: "2",
+    service: "Repair door lock",
+    category: "Carpentry",
+    customer: "Michael Brown",
+    customerAvatar: "https://i.pravatar.cc/150?u=michael",
+    customerRating: 4.5,
+    customerReviews: 87,
+    customerPhone: "+1 312 555 0202",
+    address: "78 Maple Avenue, Chicago, IL 60602",
+    distanceKm: 3.2,
+    postedAgo: "2h ago",
+    date: "Jun 1, 2025",
+    time: "2:00 PM",
+    timeRange: "2:00 PM – 05:00 PM",
+    priceMin: 50,
+    priceMax: 80,
+    price: 60,
+    paymentType: "Fixed Price",
+    budgetType: "Customer Budget",
+    status: "active",
+    icon: "lock-outline",
+    notes: "Door lock is broken and needs replacement.",
+  },
+  {
+    id: "3",
+    service: "Install ceiling fan",
+    category: "Electrical",
+    customer: "Emily Davis",
+    customerAvatar: "https://i.pravatar.cc/150?u=emily",
+    customerRating: 4.8,
+    customerReviews: 204,
+    customerPhone: "+1 312 555 0303",
+    address: "12 Oak Drive, Chicago, IL 60603",
+    distanceKm: 4.1,
+    postedAgo: "5h ago",
+    date: "Mar 20, 2026",
+    time: "11:00 AM",
+    timeRange: "11:00 AM – 01:00 PM",
+    priceMin: 70,
+    priceMax: 100,
+    price: 80,
+    paymentType: "Fixed Price",
+    budgetType: "Customer Budget",
+    status: "completed",
+    icon: "fan",
+    notes: "Standard ceiling fan install in living room.",
+  },
+  {
+    id: "4",
+    service: "Electrical Wiring",
+    category: "Electrical",
+    customer: "Alex Brown",
+    customerAvatar: "https://i.pravatar.cc/150?u=alex",
+    customerRating: 4.3,
+    customerReviews: 56,
+    customerPhone: "+1 312 555 0404",
+    address: "88 Maple Court, Chicago, IL 60604",
+    distanceKm: 1.2,
+    postedAgo: "1d ago",
+    date: "Mar 18, 2026",
+    time: "11:00 AM",
+    timeRange: "11:00 AM – 03:00 PM",
+    priceMin: 60,
+    priceMax: 100,
+    price: 80,
+    paymentType: "Hourly",
+    budgetType: "Negotiable",
+    status: "completed",
+    icon: "lightning-bolt",
+  },
+];
+
+const SEGMENT_DEFS: readonly { value: JobSegment; label: string }[] = [
   { value: "incoming", label: "Incoming" },
   { value: "active", label: "Active" },
   { value: "completed", label: "Done" },
 ] as const;
 
-const MOCK_JOBS: HandymanJob[] = [
-  {
-    id: "1",
-    service: "Leaky Faucet Repair",
-    customer: "Emily Watson",
-    customerAvatar: "https://i.pravatar.cc/150?u=emily",
-    address: "221B Baker Street, Apt 4",
-    distanceKm: 2.4,
-    date: "Today",
-    time: "3:30 PM",
-    price: 55,
-    status: "incoming",
-    icon: "pipe",
-    notes: "Kitchen sink, dripping for 2 days.",
+const EMPTY_COPY: Record<JobSegment, { icon: keyof typeof Feather.glyphMap; title: string; sub: string }> = {
+  incoming: {
+    icon: "inbox",
+    title: "No incoming jobs",
+    sub: "New job requests will appear here. Make sure you're set to Available.",
   },
-  {
-    id: "2",
-    service: "Ceiling Fan Install",
-    customer: "Michael Chen",
-    customerAvatar: "https://i.pravatar.cc/150?u=michael",
-    address: "45 Oak Avenue",
-    distanceKm: 5.1,
-    date: "Tomorrow",
-    time: "11:00 AM",
-    price: 90,
-    status: "incoming",
-    icon: "fan",
+  active: {
+    icon: "briefcase",
+    title: "No active jobs",
+    sub: "Accepted jobs you're working on will show up here.",
   },
-  {
-    id: "3",
-    service: "AC Installation",
-    customer: "David Carter",
-    customerAvatar: "https://i.pravatar.cc/150?u=david",
-    address: "12 Elm Park Road",
-    distanceKm: 3.8,
-    date: "Today",
-    time: "2:30 PM",
-    price: 120,
-    status: "active",
-    icon: "air-conditioner",
+  completed: {
+    icon: "check-circle",
+    title: "No completed jobs yet",
+    sub: "Finished jobs will be listed here for your records.",
   },
-  {
-    id: "4",
-    service: "Electrical Wiring",
-    customer: "Alex Brown",
-    customerAvatar: "https://i.pravatar.cc/150?u=alex",
-    address: "88 Maple Court",
-    distanceKm: 1.2,
-    date: "Mar 20, 2026",
-    time: "11:00 AM",
-    price: 80,
-    status: "completed",
-    icon: "lightning-bolt",
-  },
-  {
-    id: "5",
-    service: "Door Lock Replacement",
-    customer: "Sophia Kim",
-    customerAvatar: "https://i.pravatar.cc/150?u=sophia",
-    address: "7 Pine Lane",
-    distanceKm: 4.6,
-    date: "Mar 18, 2026",
-    time: "9:30 AM",
-    price: 45,
-    status: "completed",
-    icon: "lock-outline",
-  },
-];
+};
 
 export default function HandymanJobs() {
   const [segment, setSegment] = useState<JobSegment>("incoming");
@@ -135,19 +200,21 @@ export default function HandymanJobs() {
     [counts],
   );
 
-  const handleAccept = (_id: string) => haptic.success();
-  const handleDecline = (_id: string) => haptic.warning();
-  const handleStart = (_id: string) => haptic.tap();
-  const handleComplete = (_id: string) => haptic.success();
-  const handleChat = (_id: string) => haptic.selection();
-  const handleReview = (_id: string) => haptic.selection();
+  const handleViewDetails = (job: HandymanJob) => {
+    haptic.selection();
+    router.push(`/(handyman)/job-details/${job.id}`);
+  };
 
   return (
     <SafeAreaView style={ss.safe} edges={["top"]}>
-      {/* iOS large-title header */}
       <View style={ss.header}>
-        <Text style={ss.greeting}>Your workload</Text>
-        <Text style={ss.largeTitle}>Jobs</Text>
+        <Text style={ss.largeTitle}>My Jobs</Text>
+        <TouchableOpacity style={ss.avatarBtn} activeOpacity={0.8}>
+          <Image
+            source={{ uri: "https://i.pravatar.cc/150?u=handyman" }}
+            style={ss.headerAvatar}
+          />
+        </TouchableOpacity>
       </View>
 
       <View style={ss.segmentWrap}>
@@ -163,476 +230,67 @@ export default function HandymanJobs() {
         keyExtractor={(item) => item.id}
         contentContainerStyle={ss.listContent}
         showsVerticalScrollIndicator={false}
+        ListFooterComponent={
+          <PromoCard
+            title="Want more jobs?"
+            subtitle="Keep your profile updated and get more job opportunities."
+            ctaLabel="Update Profile"
+            onPress={() => router.push("/(handyman)/profile-edit" as any)}
+          />
+        }
         renderItem={({ item }) => (
           <JobCard
+            variant="full"
             job={item}
-            onAccept={() => handleAccept(item.id)}
-            onDecline={() => handleDecline(item.id)}
-            onStart={() => handleStart(item.id)}
-            onComplete={() => handleComplete(item.id)}
-            onChat={() => handleChat(item.id)}
-            onReview={() => handleReview(item.id)}
+            onPress={() => handleViewDetails(item)}
+            onAccept={() => haptic.success()}
+            onStart={() => haptic.tap()}
+            onComplete={() => haptic.success()}
+            onViewDetails={() => handleViewDetails(item)}
           />
         )}
-        ListEmptyComponent={<EmptyState segment={segment} />}
+        ListEmptyComponent={
+          <EmptyState
+            icon={EMPTY_COPY[segment].icon}
+            title={EMPTY_COPY[segment].title}
+            subtitle={EMPTY_COPY[segment].sub}
+          />
+        }
       />
     </SafeAreaView>
   );
 }
 
-// ── Job Card ──────────────────────────────────────────────
-
-type JobCardProps = {
-  job: HandymanJob;
-  onAccept: () => void;
-  onDecline: () => void;
-  onStart: () => void;
-  onComplete: () => void;
-  onChat: () => void;
-  onReview: () => void;
-};
-
-function JobCard({
-  job,
-  onAccept,
-  onDecline,
-  onStart,
-  onComplete,
-  onChat,
-  onReview,
-}: JobCardProps) {
-  return (
-    <View style={ss.card}>
-      {/* Header */}
-      <View style={ss.cardHeader}>
-        <View style={ss.iconWrapper}>
-          <MaterialCommunityIcons
-            name={job.icon}
-            size={20}
-            color={theme.colors.primary}
-          />
-        </View>
-        <View style={ss.titleContent}>
-          <Text style={ss.serviceTitle} numberOfLines={1}>
-            {job.service}
-          </Text>
-          <Text style={ss.priceText}>${job.price.toFixed(2)}</Text>
-        </View>
-        <StatusBadge status={job.status} />
-      </View>
-
-      <View style={ss.divider} />
-
-      {/* Customer + time */}
-      <View style={ss.cardBody}>
-        <View style={ss.customerInfo}>
-          <Image
-            source={{ uri: job.customerAvatar }}
-            style={ss.customerAvatar}
-          />
-          <View style={ss.customerText}>
-            <Text style={ss.customerName} numberOfLines={1}>
-              {job.customer}
-            </Text>
-            <Text style={ss.customerSub} numberOfLines={1}>
-              {job.distanceKm.toFixed(1)} km away
-            </Text>
-          </View>
-        </View>
-        <View style={ss.timeInfo}>
-          <Text style={ss.dateTime}>{job.date}</Text>
-          <Text style={ss.timeLabel}>{job.time}</Text>
-        </View>
-      </View>
-
-      {/* Location */}
-      <View style={ss.metaRow}>
-        <Ionicons
-          name="location-outline"
-          size={14}
-          color={theme.colors.ios.secondaryLabel}
-        />
-        <Text style={ss.metaText} numberOfLines={1}>
-          {job.address}
-        </Text>
-      </View>
-
-      {/* Notes (only for incoming) */}
-      {job.status === "incoming" && job.notes ? (
-        <View style={ss.notesRow}>
-          <Feather
-            name="message-circle"
-            size={13}
-            color={theme.colors.ios.secondaryLabel}
-          />
-          <Text style={ss.notesText} numberOfLines={2}>
-            {job.notes}
-          </Text>
-        </View>
-      ) : null}
-
-      {/* Footer actions */}
-      <View style={ss.cardFooter}>
-        {job.status === "incoming" && (
-          <>
-            <Button
-              title="Decline"
-              variant="tinted"
-              size="medium"
-              onPress={onDecline}
-              style={ss.footerFlex1}
-              textStyle={ss.declineText}
-            />
-            <Button
-              title="Accept"
-              variant="filled"
-              size="medium"
-              onPress={onAccept}
-              style={ss.footerFlex2}
-            />
-          </>
-        )}
-
-        {job.status === "active" && (
-          <>
-            <Button
-              title="Chat"
-              variant="tinted"
-              size="medium"
-              onPress={onChat}
-              style={ss.footerFlex1}
-              leading={
-                <Feather
-                  name="message-square"
-                  size={15}
-                  color={theme.colors.ios.blue}
-                />
-              }
-            />
-            <Button
-              title="Complete Job"
-              variant="filled"
-              size="medium"
-              onPress={onComplete}
-              style={ss.footerFlex2}
-              trailing={
-                <Ionicons name="checkmark-circle" size={16} color="#fff" />
-              }
-            />
-          </>
-        )}
-
-        {job.status === "completed" && (
-          <Button
-            title="View Receipt"
-            variant="tinted"
-            size="medium"
-            onPress={onReview}
-            style={ss.footerFull}
-            trailing={
-              <Feather
-                name="chevron-right"
-                size={16}
-                color={theme.colors.ios.blue}
-              />
-            }
-          />
-        )}
-      </View>
-
-      {/* Start hint shown for active jobs that haven't begun yet — optional decoration */}
-      {job.status === "active" ? (
-        <TouchableOpacity
-          style={ss.startStrip}
-          onPress={onStart}
-          activeOpacity={0.8}
-        >
-          <Ionicons
-            name="play-circle-outline"
-            size={16}
-            color={theme.colors.ios.blue}
-          />
-          <Text style={ss.startStripText}>Mark as started</Text>
-        </TouchableOpacity>
-      ) : null}
-    </View>
-  );
-}
-
-// ── Status Badge ──────────────────────────────────────────
-
-function StatusBadge({ status }: { status: JobStatus }) {
-  const label =
-    status === "incoming"
-      ? "NEW"
-      : status === "active"
-        ? "IN PROGRESS"
-        : "DONE";
-
-  const style =
-    status === "incoming"
-      ? ss.badgeIncoming
-      : status === "active"
-        ? ss.badgeActive
-        : ss.badgeCompleted;
-
-  const textStyle =
-    status === "incoming"
-      ? ss.badgeIncomingText
-      : status === "active"
-        ? ss.badgeActiveText
-        : ss.badgeCompletedText;
-
-  return (
-    <View style={[ss.badgeBase, style]}>
-      <Text style={[ss.badgeText, textStyle]}>{label}</Text>
-    </View>
-  );
-}
-
-// ── Empty State ───────────────────────────────────────────
-
-function EmptyState({ segment }: { segment: JobSegment }) {
-  const copy = EMPTY_COPY[segment];
-
-  return (
-    <View style={ss.emptyState}>
-      <View style={ss.emptyIconBg}>
-        <Feather name={copy.icon} size={34} color={theme.colors.textMuted} />
-      </View>
-      <Text style={ss.emptyTitle}>{copy.title}</Text>
-      <Text style={ss.emptySub}>{copy.sub}</Text>
-    </View>
-  );
-}
-
-const EMPTY_COPY: Record<
-  JobSegment,
-  { icon: keyof typeof Feather.glyphMap; title: string; sub: string }
-> = {
-  incoming: {
-    icon: "inbox",
-    title: "No incoming jobs",
-    sub: "New job requests will appear here. Make sure you're set to Available.",
-  },
-  active: {
-    icon: "briefcase",
-    title: "No active jobs",
-    sub: "Accepted jobs you're working on will show up here.",
-  },
-  completed: {
-    icon: "check-circle",
-    title: "No completed jobs yet",
-    sub: "Finished jobs will be listed here for your records.",
-  },
-};
-
-// ── Styles ────────────────────────────────────────────────
-
 const ss = StyleSheet.create({
   safe: { flex: 1, backgroundColor: theme.colors.ios.systemGroupedBackground },
-
   header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: theme.spacing.xl,
     paddingTop: theme.spacing.sm,
     paddingBottom: theme.spacing.sm,
-  },
-  greeting: {
-    ...theme.typography.ios.subhead,
-    color: theme.colors.ios.secondaryLabel,
-    marginBottom: 2,
   },
   largeTitle: {
     ...theme.typography.ios.largeTitle,
     color: theme.colors.textPrimary,
   },
-
+  avatarBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: theme.radius.full,
+    overflow: "hidden",
+    ...theme.shadows.small,
+  },
+  headerAvatar: { width: 44, height: 44, borderRadius: theme.radius.full },
   segmentWrap: {
     paddingHorizontal: theme.spacing.xl,
     paddingTop: theme.spacing.sm,
     paddingBottom: theme.spacing.md,
   },
-
   listContent: {
     paddingHorizontal: theme.spacing.xl,
     paddingBottom: 120,
-  },
-
-  // Card
-  card: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.radius.xl,
-    marginBottom: theme.spacing.md,
-    borderWidth: 1,
-    borderColor: theme.colors.borderLight,
-    ...theme.shadows.small,
-  },
-  cardHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: theme.spacing.lg,
-  },
-  iconWrapper: {
-    width: 40,
-    height: 40,
-    borderRadius: theme.radius.md,
-    backgroundColor: theme.colors.primarySubtle,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  titleContent: { flex: 1, marginLeft: 12 },
-  serviceTitle: {
-    ...theme.typography.ios.headline,
-    color: theme.colors.textPrimary,
-  },
-  priceText: {
-    ...theme.typography.ios.footnote,
-    color: theme.colors.primary,
-    fontWeight: "600",
-    marginTop: 2,
-  },
-
-  // Badge
-  badgeBase: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: theme.radius.full,
-  },
-  badgeIncoming: { backgroundColor: `${theme.colors.primary}18` },
-  badgeActive: { backgroundColor: `${theme.colors.warning}20` },
-  badgeCompleted: { backgroundColor: theme.colors.surfaceAlt },
-  badgeText: {
-    fontSize: 10,
-    fontWeight: "700",
-    letterSpacing: 0.6,
-  },
-  badgeIncomingText: { color: theme.colors.primary },
-  badgeActiveText: { color: theme.colors.warning },
-  badgeCompletedText: { color: theme.colors.textMuted },
-
-  divider: {
-    height: 1,
-    backgroundColor: theme.colors.borderLight,
-    marginHorizontal: theme.spacing.lg,
-  },
-
-  // Body
-  cardBody: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: theme.spacing.lg,
-    paddingBottom: theme.spacing.sm,
-  },
-  customerInfo: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    flex: 1,
-  },
-  customerAvatar: { width: 36, height: 36, borderRadius: 18 },
-  customerText: { flex: 1 },
-  customerName: {
-    ...theme.typography.ios.subhead,
-    color: theme.colors.textPrimary,
-    fontWeight: "600",
-  },
-  customerSub: {
-    ...theme.typography.ios.caption1,
-    color: theme.colors.textMuted,
-    marginTop: 2,
-  },
-  timeInfo: { alignItems: "flex-end" },
-  dateTime: {
-    ...theme.typography.ios.subhead,
-    color: theme.colors.textPrimary,
-    fontWeight: "500",
-  },
-  timeLabel: {
-    ...theme.typography.ios.caption1,
-    color: theme.colors.textMuted,
-  },
-
-  // Meta rows (location / notes)
-  metaRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    paddingHorizontal: theme.spacing.lg,
-    paddingBottom: theme.spacing.sm,
-  },
-  metaText: {
-    ...theme.typography.ios.footnote,
-    color: theme.colors.ios.secondaryLabel,
-    flex: 1,
-  },
-
-  notesRow: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 6,
-    paddingHorizontal: theme.spacing.lg,
-    paddingBottom: theme.spacing.sm,
-  },
-  notesText: {
-    ...theme.typography.ios.footnote,
-    color: theme.colors.ios.secondaryLabel,
-    flex: 1,
-    lineHeight: 18,
-  },
-
-  // Footer
-  cardFooter: {
-    flexDirection: "row",
-    gap: 10,
-    padding: theme.spacing.lg,
-    paddingTop: theme.spacing.md,
-  },
-  footerFlex1: { flex: 1 },
-  footerFlex2: { flex: 2 },
-  footerFull: { flex: 1 },
-  declineText: { color: theme.colors.ios.destructive },
-
-  startStrip: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 6,
-    paddingVertical: 10,
-    borderTopWidth: theme.hairline,
-    borderTopColor: theme.colors.borderLight,
-  },
-  startStripText: {
-    ...theme.typography.ios.footnote,
-    color: theme.colors.ios.blue,
-    fontWeight: "600",
-  },
-
-  // Empty state
-  emptyState: {
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 60,
-    paddingHorizontal: 40,
-  },
-  emptyIconBg: {
-    width: 88,
-    height: 88,
-    borderRadius: 44,
-    backgroundColor: theme.colors.surfaceAlt,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 16,
-  },
-  emptyTitle: {
-    ...theme.typography.ios.headline,
-    color: theme.colors.textPrimary,
-    marginBottom: 6,
-  },
-  emptySub: {
-    ...theme.typography.ios.footnote,
-    color: theme.colors.textMuted,
-    textAlign: "center",
-    lineHeight: 18,
+    gap: theme.spacing.md + 2,
   },
 });
