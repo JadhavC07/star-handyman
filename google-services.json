@@ -1,51 +1,13 @@
 {
   "project_info": {
-    "project_number": "564771293994",
-    "project_id": "goforpg",
-    "storage_bucket": "goforpg.firebasestorage.app"
+    "project_number": "154928885420",
+    "project_id": "starhandyman-2d0d6",
+    "storage_bucket": "starhandyman-2d0d6.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:564771293994:android:056c0bd208174de54eec53",
-        "android_client_info": {
-          "package_name": "com.agri.cet"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBQQ9hLl98-cmJlOmq3BDnVKm-AjBOf1f8"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:564771293994:android:68e4c7c6592c69e94eec53",
-        "android_client_info": {
-          "package_name": "com.starhandyman.mobile"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBQQ9hLl98-cmJlOmq3BDnVKm-AjBOf1f8"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:564771293994:android:12c4e16ee61beba44eec53",
+        "mobilesdk_app_id": "1:154928885420:android:1df366cd63656e7ee37909",
         "android_client_info": {
           "package_name": "com.starhandyman.pro"
         }
@@ -53,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBQQ9hLl98-cmJlOmq3BDnVKm-AjBOf1f8"
+          "current_key": "AIzaSyA4ZRWJxjD7TARuEc_ArufXeGO7uobXTrA"
         }
       ],
       "services": {

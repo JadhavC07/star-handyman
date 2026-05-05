@@ -40,15 +40,25 @@ export function ProfileIdentity({
         onPress={onPickAvatar}
         activeOpacity={0.85}
       >
-        {avatarUri ? (
-          <Image source={{ uri: avatarUri }} style={ss.avatar} />
-        ) : (
-          <View style={[ss.avatar, ss.avatarFallback]}>
-            <Text style={ss.avatarLetter}>
-              {name?.[0]?.toUpperCase() ?? "H"}
+        <View style={ss.ring}>
+          <View style={ss.ringInner}>
+            {avatarUri ? (
+              <Image source={{ uri: avatarUri }} style={ss.avatar} />
+            ) : (
+              <View style={[ss.avatar, ss.avatarFallback]}>
+                <Text style={ss.avatarLetter}>
+                  {name?.[0]?.toUpperCase() ?? "H"}
+                </Text>
+              </View>
+            )}
+          </View>
+
+          <View style={ss.ringBadge}>
+            <Text style={ss.ringBadgeText} numberOfLines={1}>
+              STARHANDYMAN
             </Text>
           </View>
-        )}
+        </View>
 
         {isVerified && (
           <View style={ss.verifiedDot}>
@@ -92,13 +102,44 @@ const ss = StyleSheet.create({
     paddingVertical: theme.spacing.sm,
     marginBottom: theme.spacing.xl,
   },
-  avatarWrap: { position: "relative", marginBottom: theme.spacing.md + 2 },
+  avatarWrap: { position: "relative", marginBottom: theme.spacing.lg + 4 },
+  ring: {
+    width: 124,
+    height: 124,
+    borderRadius: theme.radius.full,
+    backgroundColor: theme.colors.primary,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  ringInner: {
+    width: 104,
+    height: 104,
+    borderRadius: theme.radius.full,
+    backgroundColor: theme.colors.surface,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  ringBadge: {
+    position: "absolute",
+    bottom: -8,
+    alignSelf: "center",
+    backgroundColor: theme.colors.primary,
+    paddingHorizontal: theme.spacing.sm + 2,
+    paddingVertical: 2,
+    borderRadius: theme.radius.full,
+    borderWidth: 2,
+    borderColor: theme.colors.surface,
+  },
+  ringBadgeText: {
+    ...theme.typography.ios.caption2,
+    color: theme.colors.surface,
+    fontWeight: "800",
+    letterSpacing: 0.6,
+  },
   avatar: {
     width: 100,
     height: 100,
     borderRadius: theme.radius.full,
-    borderWidth: 3,
-    borderColor: theme.colors.surface,
   },
   avatarFallback: {
     backgroundColor: theme.colors.primarySubtle,
@@ -112,16 +153,16 @@ const ss = StyleSheet.create({
   },
   verifiedDot: {
     position: "absolute",
-    bottom: 4,
-    right: -2,
+    top: 6,
+    right: 2,
     backgroundColor: theme.colors.surface,
     borderRadius: theme.radius.md,
     padding: 1,
   },
   cameraDot: {
     position: "absolute",
-    bottom: -4,
-    right: -4,
+    top: 6,
+    left: 2,
     width: 26,
     height: 26,
     borderRadius: theme.radius.full,

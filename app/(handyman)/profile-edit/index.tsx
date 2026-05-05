@@ -43,7 +43,7 @@ export default function ProfileEditIndex() {
       profile?.insurance_company,
       profile?.bank_name,
       profile?.bank_account_number,
-      profile?.skills?.length,
+      profile?.category_enrollments?.length,
       profile?.availability,
     ];
     const filled = flags.filter(Boolean).length;

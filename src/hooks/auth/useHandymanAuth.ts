@@ -2,10 +2,12 @@ import { useAuthStore } from "@/src/features/auth/auth.store";
 import type {
   ServicemanLoginPayload,
   ServicemanRegisterPayload,
+  ServicemanSendLoginOtpPayload,
   ServicemanSendOtpPayload,
   ServicemanUpdateProfilePayload,
 } from "@/src/features/auth/auth.types";
 import { HandymanAuthService } from "@/src/features/auth/handyman-auth.service";
+import { useRegisterFcmToken } from "@/src/hooks/notifications/useNotifications";
 import { PROFILE_KEYS } from "@/src/lib/queryKeys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -15,9 +17,17 @@ export const useHandymanSendOtp = () =>
       HandymanAuthService.sendOtp(payload),
   });
 
+export const useHandymanSendLoginOtp = () =>
+  useMutation({
+    mutationFn: (payload: ServicemanSendLoginOtpPayload) =>
+      HandymanAuthService.sendLoginOtp(payload),
+  });
+
 export const useHandymanLogin = () => {
   const qc = useQueryClient();
   const setAuth = useAuthStore((s) => s.setAuth);
+  const registerToken = useRegisterFcmToken();
+
   return useMutation({
     mutationFn: (payload: ServicemanLoginPayload) =>
       HandymanAuthService.login(payload),
@@ -25,6 +35,7 @@ export const useHandymanLogin = () => {
       await setAuth(data.user, data.token);
       qc.clear();
       qc.setQueryData(PROFILE_KEYS.all, data.user);
+      registerToken.mutate();
     },
   });
 };
@@ -32,6 +43,7 @@ export const useHandymanLogin = () => {
 export const useHandymanRegister = () => {
   const qc = useQueryClient();
   const setAuth = useAuthStore((s) => s.setAuth);
+  const registerToken =useRegisterFcmToken();
   return useMutation({
     mutationFn: (payload: ServicemanRegisterPayload) =>
       HandymanAuthService.register(payload),
@@ -39,6 +51,7 @@ export const useHandymanRegister = () => {
       await setAuth(data.user, data.token);
       qc.clear();
       qc.setQueryData(PROFILE_KEYS.all, data.user);
+      registerToken.mutate();
     },
   });
 };

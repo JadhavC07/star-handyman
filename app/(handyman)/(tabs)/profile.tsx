@@ -38,17 +38,31 @@ export default function Profile() {
     router.push(`/(handyman)/profile-edit/${key}` as any);
 
   const handlePickAvatar = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
+    const perm = await ImagePicker.requestCameraPermissionsAsync();
+    if (!perm.granted) {
+      Alert.alert(
+        "Camera permission needed",
+        "Please allow camera access to take a profile photo.",
+      );
+      return;
+    }
+    const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.8,
+      cameraType: ImagePicker.CameraType.front,
     });
     if (result.canceled) return;
     const asset = result.assets[0];
-    const ext = asset.uri.split(".").pop() ?? "jpg";
+    const ext = (asset.uri.split(".").pop() ?? "jpg").toLowerCase();
+    const mime =
+      ext === "png" ? "image/png"
+      : ext === "webp" ? "image/webp"
+      : ext === "heic" ? "image/heic"
+      : "image/jpeg";
     updateProfile(
-      { avatar: { uri: asset.uri, name: `avatar.${ext}`, type: `image/${ext}` } },
+      { avatar: { uri: asset.uri, name: `avatar.${ext}`, type: mime } },
       {
         onSuccess: () => {
           haptic.success();
@@ -67,7 +81,7 @@ export default function Profile() {
         style: "destructive",
         onPress: () =>
           logout(undefined, {
-            onSuccess: () => router.replace("/(handyman-auth)/login"),
+            onSettled: () => router.replace("/(handyman-auth)/login"),
           }),
       },
     ]);
@@ -153,7 +167,9 @@ export default function Profile() {
         />
 
         <ProfileInfoCard
-          skills={profile?.skills}
+          skills={profile?.category_enrollments
+            ?.map((e) => e.category_name)
+            .filter((n): n is string => !!n)}
           experienceYears={experienceYears}
           availabilityLabel={availabilityLabel}
           isAvailable={isAvailable}

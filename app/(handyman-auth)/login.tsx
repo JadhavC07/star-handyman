@@ -1,6 +1,6 @@
 import {
   useHandymanLogin,
-  useHandymanSendOtp,
+  useHandymanSendLoginOtp,
 } from "@/src/hooks/auth/useHandymanAuth";
 import { extractErrorMessage } from "@/src/lib/errorMessage";
 import { theme } from "@/src/theme/theme";
@@ -218,7 +218,7 @@ const HandymanLoginScreen: React.FC = () => {
   const [showOtp, setShowOtp] = useState(false);
   const otpRefs = useRef<(TextInput | null)[]>([]);
 
-  const sendOtp = useHandymanSendOtp();
+  const sendOtp = useHandymanSendLoginOtp();
   const login = useHandymanLogin();
 
   useEffect(() => {

@@ -2,11 +2,24 @@ export type BankAccountType = 'savings' | 'chequing' | 'current'
 
 export type ServicemanAvailability = 'full-time' | 'part-time' | 'on-call'
 
+export interface CategoryEnrollment {
+  category_id:          number
+  category_name:        string | null
+  category_image:       string | null
+  enrolled_upto_level:  number
+  license_photo:        string | null
+  levels: {
+    level:            number
+    description:      string
+    license_required: boolean
+  }[]
+}
+
 export interface ServicemanProfile {
   id?:                         number
   user_id?:                    number
   staff_id?:                   string | null
-  skills:                      string[]
+  category_enrollments?:       CategoryEnrollment[]
   rating:                      string | number
   availability:                ServicemanAvailability | null
   service_radius_km:           string | number | null
@@ -87,10 +100,20 @@ export interface ServicemanSendOtpPayload {
   name?: string
 }
 
+export interface ServicemanSendLoginOtpPayload {
+  phone: string
+}
+
 export interface ServicemanRegisterPayload {
   phone: string
   otp:   string
   name:  string
+  email?: string
+
+  // Category enrollment (optional)
+  categories?: number[]
+  levels?: Record<number, number>
+  license_photos?: Record<number, { uri: string; name: string; type: string }>
 }
 
 export interface ServicemanLoginPayload {
@@ -102,7 +125,13 @@ export interface ServicemanUpdateProfilePayload {
   // A. Basic
   name?:                       string
   email?:                      string
+  phone?:                      string
   avatar?:                     { uri: string; name: string; type: string }
+
+  // Category enrollment (upserted server-side)
+  categories?:                 number[]
+  levels?:                     Record<number, number>
+  license_photos?:             Record<number, { uri: string; name: string; type: string }>
 
   // B. Verification & legal
   sin_number?:                 string
@@ -125,7 +154,6 @@ export interface ServicemanUpdateProfilePayload {
   bank_account_type?:          BankAccountType
 
   // E. Other
-  skills?:                     string[]
   availability?:               ServicemanAvailability
   service_radius_km?:          number
   experience_years?:           number

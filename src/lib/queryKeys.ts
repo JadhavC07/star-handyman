@@ -1,6 +1,7 @@
 export const CATEGORY_KEYS = {
   all:      ['categories'] as const,
   services: (slug: string) => ['categories', slug, 'services'] as const,
+  levels:   (id: number)   => ['categories', id, 'levels'] as const,
 }
 
 export const SERVICE_KEYS = {

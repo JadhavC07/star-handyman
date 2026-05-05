@@ -9,7 +9,11 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "StarHandyman uses the camera so you can take a profile photo.",
+        "NSMicrophoneUsageDescription": "StarHandyman does not record audio; this permission is requested by the camera module."
+      }
     },
     "android": {
       "edgeToEdgeEnabled": true,
@@ -36,10 +40,25 @@
         }
       ],
       "@react-native-firebase/app",
-      "@react-native-firebase/messaging",
+      [
+        "@react-native-firebase/messaging",
+        {
+          "android": {
+            "icon": "./assets/images/notification-icon.png",
+            "color": "#FF6B00"
+          }
+        }
+      ],
       "@react-native-community/datetimepicker",
       "expo-secure-store",
-      "expo-localization"
+      "expo-localization",
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "StarHandyman uses the camera so you can take a profile photo.",
+          "photosPermission": "StarHandyman accesses your photos so you can upload license documents."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

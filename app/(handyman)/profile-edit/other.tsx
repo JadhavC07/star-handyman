@@ -9,7 +9,6 @@ import {
   validateLng,
   validateNotes,
   validateRadius,
-  validateSkills,
 } from "@/src/features/profile/validators";
 import { useHandymanUpdateProfile } from "@/src/hooks/auth/useHandymanAuth";
 import { useHandymanProfile } from "@/src/hooks/profile/useHandymanProfile";
@@ -25,7 +24,6 @@ type ErrorMap = {
   experience?: string | null;
   lat?: string | null;
   lng?: string | null;
-  skills?: string | null;
   notes?: string | null;
 };
 
@@ -35,7 +33,6 @@ export default function OtherEditScreen() {
   const { mutate: updateProfile, isPending } = useHandymanUpdateProfile();
   const profile = data?.user?.profile;
 
-  const [skills, setSkills] = useState("");
   const [availability, setAvailability] =
     useState<ServicemanAvailability | undefined>();
   const [radius, setRadius] = useState("");
@@ -50,7 +47,6 @@ export default function OtherEditScreen() {
 
   useEffect(() => {
     if (profile) {
-      setSkills(profile.skills?.join(", ") ?? "");
       setAvailability(
         (profile.availability as ServicemanAvailability) ?? undefined,
       );
@@ -67,19 +63,12 @@ export default function OtherEditScreen() {
   }, [profile]);
 
   const handleSave = () => {
-    const skillsArr = skills
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
-
     const next: ErrorMap = {
       availability: !availability ? "Select an availability" : null,
       radius: validateRadius(radius),
-      // Laravel caps experience_years at 50.
       experience: validateInt(experience, 0, 50),
       lat: validateLat(lat),
       lng: validateLng(lng),
-      skills: validateSkills(skillsArr),
       notes: validateNotes(notes),
     };
 
@@ -104,7 +93,6 @@ export default function OtherEditScreen() {
 
     updateProfile(
       {
-        skills: skillsArr,
         availability,
         service_radius_km: radiusNum,
         experience_years: expNum,
@@ -141,19 +129,6 @@ export default function OtherEditScreen() {
       saveLabel={t("profile.save")}
       cancelLabel={t("profile.cancel")}
     >
-      <FormField
-        label={t("profile.fields.skills")}
-        hint={t("profile.fields.skills_hint")}
-        value={skills}
-        onChangeText={(v) => {
-          setSkills(v);
-          clearErr("skills");
-        }}
-        placeholder="Plumbing, Installation"
-        autoCapitalize="words"
-        error={errors.skills}
-      />
-
       <ChipSelector
         label={t("profile.fields.availability")}
         options={availabilityOptions}

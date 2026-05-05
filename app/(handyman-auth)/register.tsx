@@ -1,3 +1,5 @@
+import { CategoryEnrollmentStep } from "@/src/components/auth/CategoryEnrollmentStep";
+import type { EnrollmentDraft } from "@/src/features/categories/categories.types";
 import {
   useHandymanRegister,
   useHandymanSendOtp,
@@ -22,18 +24,24 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-// Minimal OTP-based registration per new API spec.
-// send-otp: {phone, name}; register: {phone, name, otp}. Email is collected later via profile update.
-
 const RESEND_SECONDS = 30;
+const EMPTY_DRAFT: EnrollmentDraft = {
+  selectedCategoryIds: [],
+  levels: {},
+  licensePhotos: {},
+};
+
+type Step = "info" | "otp" | "categories";
 
 const HandymanRegisterScreen: React.FC = () => {
+  const [step, setStep] = useState<Step>("info");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [otpDigits, setOtpDigits] = useState(["", "", "", "", "", ""]);
-  const [otpSent, setOtpSent] = useState(false);
   const [focusedField, setFocused] = useState<string | null>(null);
   const [resendTimer, setResend] = useState(0);
+  const [enrollment, setEnrollment] = useState<EnrollmentDraft>(EMPTY_DRAFT);
   const otpRefs = useRef<(TextInput | null)[]>([]);
 
   const sendOtp = useHandymanSendOtp();
@@ -45,7 +53,6 @@ const HandymanRegisterScreen: React.FC = () => {
     return () => clearInterval(id);
   }, [resendTimer]);
 
-  // Phone state holds 10 digits; we prepend "+1" when sending to the API.
   const sanitizedPhone = phone.replace(/\D/g, "").slice(0, 10);
   const fullPhone = `+1${sanitizedPhone}`;
 
@@ -56,13 +63,20 @@ const HandymanRegisterScreen: React.FC = () => {
   const activeError = sendOtp.error ?? register.error;
   const errorMessage = activeError ? extractErrorMessage(activeError) : null;
 
+  const enrollmentValid = (() => {
+    if (enrollment.selectedCategoryIds.length === 0) return true; // optional
+    for (const id of enrollment.selectedCategoryIds) {
+      if (!enrollment.levels[id]) return false;
+    }
+    return true;
+  })();
+
   const handleSendOtp = () => {
-    // /serviceman/send-otp: {phone, name}
     sendOtp.mutate(
       { phone: fullPhone, name: name.trim() },
       {
         onSuccess: () => {
-          setOtpSent(true);
+          setStep("otp");
           setResend(RESEND_SECONDS);
           setOtpDigits(["", "", "", "", "", ""]);
           setTimeout(() => otpRefs.current[0]?.focus(), 100);
@@ -71,13 +85,28 @@ const HandymanRegisterScreen: React.FC = () => {
     );
   };
 
+  const handleVerifyOtp = () => {
+    if (!otpComplete) return;
+    setStep("categories");
+  };
+
   const handleRegister = () => {
-    // /serviceman/register: {phone, name, otp}
     register.mutate(
       {
         name: name.trim(),
         phone: fullPhone,
         otp: otpDigits.join(""),
+        email: email.trim() || undefined,
+        categories: enrollment.selectedCategoryIds.length
+          ? enrollment.selectedCategoryIds
+          : undefined,
+        levels: enrollment.selectedCategoryIds.length
+          ? enrollment.levels
+          : undefined,
+        license_photos:
+          Object.keys(enrollment.licensePhotos).length > 0
+            ? enrollment.licensePhotos
+            : undefined,
       },
       { onSuccess: () => router.replace("/(handyman)/(tabs)") },
     );
@@ -100,6 +129,18 @@ const HandymanRegisterScreen: React.FC = () => {
     }
   };
 
+  const handleBack = () => {
+    if (step === "otp") {
+      setStep("info");
+      sendOtp.reset();
+    } else if (step === "categories") {
+      setStep("otp");
+      register.reset();
+    } else {
+      router.back();
+    }
+  };
+
   const inputProps = (id: string) => ({
     onFocus: () => setFocused(id),
     onBlur: () => setFocused(null),
@@ -110,6 +151,22 @@ const HandymanRegisterScreen: React.FC = () => {
   ];
   const iconColor = (id: string) =>
     focusedField === id ? theme.colors.primary : theme.colors.textMuted;
+
+  const titleByStep: Record<Step, { title: string; sub: string }> = {
+    info: {
+      title: "Create Handyman Account",
+      sub: "Enter your details to start accepting jobs",
+    },
+    otp: {
+      title: "Verify your number",
+      sub: `OTP sent to ${fullPhone}`,
+    },
+    categories: {
+      title: "Your services",
+      sub: "Pick the categories and levels you want to work in",
+    },
+  };
+  const heading = titleByStep[step];
 
   return (
     <SafeAreaView style={styles.container}>
@@ -124,16 +181,25 @@ const HandymanRegisterScreen: React.FC = () => {
             keyboardShouldPersistTaps="handled"
           >
             <View style={styles.topBar}>
-              <TouchableOpacity
-                onPress={() => router.back()}
-                style={styles.backBtn}
-              >
+              <TouchableOpacity onPress={handleBack} style={styles.backBtn}>
                 <Ionicons
                   name="arrow-back"
                   size={22}
                   color={theme.colors.textPrimary}
                 />
               </TouchableOpacity>
+              <View style={styles.stepDots}>
+                {(["info", "otp", "categories"] as Step[]).map((s) => (
+                  <View
+                    key={s}
+                    style={[
+                      styles.stepDot,
+                      step === s && styles.stepDotActive,
+                    ]}
+                  />
+                ))}
+              </View>
+              <View style={styles.backBtn} />
             </View>
 
             <View style={styles.brandSection}>
@@ -145,25 +211,14 @@ const HandymanRegisterScreen: React.FC = () => {
                 <Feather name="tool" size={12} color={theme.colors.primary} />
                 <Text style={styles.roleBadgeText}>HANDYMAN</Text>
               </View>
-              <Text style={styles.brandTagline}>
-                Join as a service provider
-              </Text>
             </View>
 
             <View style={styles.card}>
-              <Text style={styles.cardTitle}>
-                {otpSent ? "Verify your number" : "Create Handyman Account"}
-              </Text>
-              <Text style={styles.cardSub}>
-                {otpSent
-                  ? `OTP sent to ${fullPhone}`
-                  : "Enter your details to start accepting jobs"}
-              </Text>
+              <Text style={styles.cardTitle}>{heading.title}</Text>
+              <Text style={styles.cardSub}>{heading.sub}</Text>
 
-              {/* ── Step 1: Info fields ─────────────────── */}
-              {!otpSent && (
+              {step === "info" && (
                 <>
-                  {/* Name */}
                   <View style={wrapperStyle("name")}>
                     <Feather name="user" size={18} color={iconColor("name")} />
                     <TextInput
@@ -177,7 +232,6 @@ const HandymanRegisterScreen: React.FC = () => {
                     />
                   </View>
 
-                  {/* Phone */}
                   <View style={[wrapperStyle("phone"), { marginTop: 14 }]}>
                     <Feather name="phone" size={18} color={iconColor("phone")} />
                     <Text style={styles.countryCode}>+1</Text>
@@ -195,6 +249,21 @@ const HandymanRegisterScreen: React.FC = () => {
                       autoCorrect={false}
                       maxLength={10}
                       {...inputProps("phone")}
+                    />
+                  </View>
+
+                  <View style={[wrapperStyle("email"), { marginTop: 14 }]}>
+                    <Feather name="mail" size={18} color={iconColor("email")} />
+                    <TextInput
+                      placeholder="Email (optional)"
+                      placeholderTextColor={theme.colors.textMuted}
+                      style={styles.input}
+                      value={email}
+                      onChangeText={setEmail}
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      {...inputProps("email")}
                     />
                   </View>
 
@@ -220,8 +289,7 @@ const HandymanRegisterScreen: React.FC = () => {
                 </>
               )}
 
-              {/* ── Step 2: OTP ─────────────────────────── */}
-              {otpSent && (
+              {step === "otp" && (
                 <>
                   <View style={styles.otpRow}>
                     {otpDigits.map((digit, i) => (
@@ -258,14 +326,7 @@ const HandymanRegisterScreen: React.FC = () => {
                         <Text style={styles.resendLink}>Resend OTP</Text>
                       </TouchableOpacity>
                     )}
-                    <TouchableOpacity
-                      onPress={() => {
-                        setOtpSent(false);
-                        setOtpDigits(["", "", "", "", "", ""]);
-                        sendOtp.reset();
-                        register.reset();
-                      }}
-                    >
+                    <TouchableOpacity onPress={() => setStep("info")}>
                       <Text style={styles.changeLink}>Edit details</Text>
                     </TouchableOpacity>
                   </View>
@@ -279,14 +340,43 @@ const HandymanRegisterScreen: React.FC = () => {
                       styles.mainBtn,
                       !otpComplete && styles.mainBtnDisabled,
                     ]}
-                    onPress={handleRegister}
+                    onPress={handleVerifyOtp}
                     disabled={!otpComplete || isLoading}
+                    activeOpacity={0.85}
+                  >
+                    <Text style={styles.mainBtnText}>Continue</Text>
+                  </TouchableOpacity>
+                </>
+              )}
+
+              {step === "categories" && (
+                <>
+                  <CategoryEnrollmentStep
+                    value={enrollment}
+                    onChange={setEnrollment}
+                  />
+
+                  {errorMessage && (
+                    <Text style={styles.errorText}>{errorMessage}</Text>
+                  )}
+
+                  <TouchableOpacity
+                    style={[
+                      styles.mainBtn,
+                      !enrollmentValid && styles.mainBtnDisabled,
+                    ]}
+                    onPress={handleRegister}
+                    disabled={!enrollmentValid || isLoading}
                     activeOpacity={0.85}
                   >
                     {isLoading ? (
                       <ActivityIndicator color="#fff" />
                     ) : (
-                      <Text style={styles.mainBtnText}>Create Account</Text>
+                      <Text style={styles.mainBtnText}>
+                        {enrollment.selectedCategoryIds.length === 0
+                          ? "Skip & Create Account"
+                          : "Create Account"}
+                      </Text>
                     )}
                   </TouchableOpacity>
                 </>
@@ -324,7 +414,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing.xl,
     paddingBottom: 40,
   },
-  topBar: { paddingTop: 8, marginBottom: 4 },
+  topBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingTop: 8,
+    marginBottom: 4,
+  },
   backBtn: {
     width: 40,
     height: 40,
@@ -334,7 +430,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     ...theme.shadows.small,
   },
-  brandSection: { alignItems: "center", paddingTop: 16, paddingBottom: 28 },
+  stepDots: {
+    flexDirection: "row",
+    gap: theme.spacing.xs + 2,
+  },
+  stepDot: {
+    width: 24,
+    height: 4,
+    borderRadius: theme.radius.full,
+    backgroundColor: theme.colors.border,
+  },
+  stepDotActive: { backgroundColor: theme.colors.primary },
+  brandSection: { alignItems: "center", paddingTop: 16, paddingBottom: 20 },
   logoMark: {
     width: 56,
     height: 56,
@@ -352,7 +459,7 @@ const styles = StyleSheet.create({
   },
   brandName: {
     fontFamily: "PlusJakartaSans_700Bold",
-    fontSize: 24,
+    fontSize: 22,
     color: theme.colors.textPrimary,
     letterSpacing: -0.3,
     marginBottom: 8,
@@ -365,7 +472,6 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: theme.radius.full,
     backgroundColor: theme.colors.primarySubtle,
-    marginBottom: 8,
   },
   roleBadgeText: {
     ...theme.typography.caption,
@@ -373,11 +479,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: 1,
     fontSize: 11,
-  },
-  brandTagline: {
-    ...theme.typography.body,
-    fontSize: 14,
-    color: theme.colors.textSecondary,
   },
   card: {
     backgroundColor: theme.colors.surface,
@@ -426,13 +527,6 @@ const styles = StyleSheet.create({
     color: theme.colors.textPrimary,
     height: "100%",
     fontSize: 15,
-  },
-  hint: {
-    ...theme.typography.caption,
-    color: theme.colors.textMuted,
-    marginTop: 4,
-    marginLeft: 2,
-    fontSize: 12,
   },
   otpRow: { flexDirection: "row", gap: 10, marginBottom: 16 },
   otpBox: {
@@ -499,14 +593,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   footer: { flexDirection: "row", justifyContent: "center", marginTop: 20 },
-  swapFooter: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 10,
-    paddingTop: 14,
-    borderTopWidth: 1,
-    borderTopColor: theme.colors.border,
-  },
   footerText: {
     ...theme.typography.body,
     color: theme.colors.textSecondary,
