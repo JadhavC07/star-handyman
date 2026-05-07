@@ -1,6 +1,9 @@
 import { ProfileIdentity } from "@/src/components/profile/ProfileIdentity";
 import { ProfileInfoCard } from "@/src/components/profile/ProfileInfoCard";
-import { MenuItem, ProfileMenuList } from "@/src/components/profile/ProfileMenuList";
+import {
+  MenuItem,
+  ProfileMenuList,
+} from "@/src/components/profile/ProfileMenuList";
 import { useHandymanUpdateProfile } from "@/src/hooks/auth/useHandymanAuth";
 import { useLogout } from "@/src/hooks/auth/useLogout";
 import { useHandymanProfile } from "@/src/hooks/profile/useHandymanProfile";
@@ -25,7 +28,8 @@ export default function Profile() {
   const { t } = useTranslation("handyman");
   const { data, isLoading, refetch } = useHandymanProfile();
   const { mutate: logout, isPending: loggingOut } = useLogout();
-  const { mutate: updateProfile, isPending: updating } = useHandymanUpdateProfile();
+  const { mutate: updateProfile, isPending: updating } =
+    useHandymanUpdateProfile();
 
   const user = data?.user;
   const profile = user?.profile;
@@ -47,7 +51,7 @@ export default function Profile() {
       return;
     }
     const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ["images"],
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.8,
@@ -57,10 +61,13 @@ export default function Profile() {
     const asset = result.assets[0];
     const ext = (asset.uri.split(".").pop() ?? "jpg").toLowerCase();
     const mime =
-      ext === "png" ? "image/png"
-      : ext === "webp" ? "image/webp"
-      : ext === "heic" ? "image/heic"
-      : "image/jpeg";
+      ext === "png"
+        ? "image/png"
+        : ext === "webp"
+          ? "image/webp"
+          : ext === "heic"
+            ? "image/heic"
+            : "image/jpeg";
     updateProfile(
       { avatar: { uri: asset.uri, name: `avatar.${ext}`, type: mime } },
       {
@@ -95,7 +102,8 @@ export default function Profile() {
   const availabilityLabel = profile?.availability
     ? t(`profile.availability_options.${profile.availability}`)
     : "Available for jobs";
-  const isAvailable = (profile?.availability as string | undefined) === "available";
+  const isAvailable =
+    (profile?.availability as string | undefined) === "available";
 
   const menuItems = useMemo<MenuItem[]>(
     () => [
@@ -125,7 +133,7 @@ export default function Profile() {
         label: "Notifications",
         iconName: "notifications",
         iconBg: theme.colors.ios.purple,
-        onPress: () => goToSection("other"),
+        onPress: () => router.push(`/(handyman)/notifications`),
       },
       {
         key: "help",
@@ -183,7 +191,11 @@ export default function Profile() {
           disabled={loggingOut}
           activeOpacity={0.8}
         >
-          <MaterialCommunityIcons name="logout" size={18} color={theme.colors.ios.destructive} />
+          <MaterialCommunityIcons
+            name="logout"
+            size={18}
+            color={theme.colors.ios.destructive}
+          />
           <Text style={ss.logoutText}>
             {loggingOut ? "Logging out…" : "Logout"}
           </Text>

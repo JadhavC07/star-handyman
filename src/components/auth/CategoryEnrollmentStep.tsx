@@ -10,11 +10,13 @@ import {
 import { haptic } from "@/src/lib/haptics";
 import { theme } from "@/src/theme/theme";
 import { Feather } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   Image,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -38,12 +40,16 @@ export function CategoryEnrollmentStep({ value, onChange }: Props) {
       if (isSelected) {
         const nextLevels = { ...value.levels };
         const nextPhotos = { ...value.licensePhotos };
+        const nextDate = { ...value.expiryDates };
         delete nextLevels[cat.id];
         delete nextPhotos[cat.id];
         onChange({
-          selectedCategoryIds: value.selectedCategoryIds.filter((id) => id !== cat.id),
+          selectedCategoryIds: value.selectedCategoryIds.filter(
+            (id) => id !== cat.id,
+          ),
           levels: nextLevels,
           licensePhotos: nextPhotos,
+          expiryDates: nextDate,
         });
       } else {
         onChange({
@@ -103,6 +109,7 @@ export function CategoryEnrollmentStep({ value, onChange }: Props) {
             key={id}
             category={cat}
             level={value.levels[id]}
+            expiryDate={value.expiryDates[id]}
             photo={value.licensePhotos[id]}
             onLevelChange={(level) =>
               onChange({
@@ -116,6 +123,12 @@ export function CategoryEnrollmentStep({ value, onChange }: Props) {
               else delete next[id];
               onChange({ ...value, licensePhotos: next });
             }}
+            onExpiryChange={(date) => {
+              const next = { ...value.expiryDates };
+              if (date) next[id] = date;
+              else delete next[id];
+              onChange({ ...value, expiryDates: next });
+            }}
           />
         );
       })}
@@ -127,19 +140,24 @@ type DetailProps = {
   category: Category;
   level: number | undefined;
   photo: LocalLicensePhoto | undefined;
+  expiryDate: string | undefined;
   onLevelChange: (level: number) => void;
   onPhotoChange: (photo: LocalLicensePhoto | null) => void;
+  onExpiryChange: (date: string | null) => void;
 };
 
 function CategoryDetail({
   category,
   level,
   photo,
+  expiryDate,
   onLevelChange,
   onPhotoChange,
+  onExpiryChange,
 }: DetailProps) {
   const { data, isLoading } = useCategoryLevels(category.id);
   const levels = data?.data?.levels ?? [];
+  const [showPicker, setShowPicker] = useState(false);
 
   const selectedLevel = level
     ? levels.find((l) => l.level === level)
@@ -150,7 +168,6 @@ function CategoryDetail({
     haptic.selection();
     const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!perm.granted) return;
-
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -160,9 +177,11 @@ function CategoryDetail({
     const asset = result.assets[0];
     const ext = (asset.uri.split(".").pop() ?? "jpg").toLowerCase();
     const mime =
-      ext === "png" ? "image/png"
-      : ext === "webp" ? "image/webp"
-      : "image/jpeg";
+      ext === "png"
+        ? "image/png"
+        : ext === "webp"
+          ? "image/webp"
+          : "image/jpeg";
     onPhotoChange({
       uri: asset.uri,
       name: `license_${category.id}.${ext}`,
@@ -170,12 +189,24 @@ function CategoryDetail({
     });
   }, [category.id, onPhotoChange]);
 
+  // Format ISO string → readable label
+  const formattedExpiry = expiryDate
+    ? new Date(expiryDate).toLocaleDateString("en-CA", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    : null;
+
   return (
     <View style={ss.detailCard}>
       <Text style={ss.detailTitle}>{category.name}</Text>
 
       {isLoading ? (
-        <ActivityIndicator color={theme.colors.primary} style={ss.detailLoader} />
+        <ActivityIndicator
+          color={theme.colors.primary}
+          style={ss.detailLoader}
+        />
       ) : (
         <>
           <Text style={ss.detailHint}>Choose your highest level</Text>
@@ -204,9 +235,7 @@ function CategoryDetail({
                       name="shield"
                       size={11}
                       color={
-                        active
-                          ? theme.colors.surface
-                          : theme.colors.ios.orange
+                        active ? theme.colors.surface : theme.colors.ios.orange
                       }
                       style={ss.shieldIcon}
                     />
@@ -222,6 +251,7 @@ function CategoryDetail({
 
           {needsLicense && (
             <View style={ss.licenseSection}>
+              {/* ── Photo picker ── */}
               <Text style={ss.licenseLabel}>License photo required</Text>
               {photo ? (
                 <View style={ss.photoPreviewRow}>
@@ -254,6 +284,60 @@ function CategoryDetail({
                   />
                   <Text style={ss.uploadText}>Upload license</Text>
                 </TouchableOpacity>
+              )}
+
+              {/* ── Expiry date picker ── */}
+              <Text style={[ss.licenseLabel, ss.expiryLabel]}>
+                License expiry date
+              </Text>
+              <TouchableOpacity
+                style={ss.dateBtn}
+                onPress={() => {
+                  haptic.selection();
+                  setShowPicker(true);
+                }}
+                activeOpacity={0.7}
+              >
+                <Feather
+                  name="calendar"
+                  size={15}
+                  color={
+                    expiryDate ? theme.colors.primary : theme.colors.textMuted
+                  }
+                />
+                <Text
+                  style={[ss.dateBtnText, expiryDate && ss.dateBtnTextActive]}
+                >
+                  {formattedExpiry ?? "Select expiry date"}
+                </Text>
+                {expiryDate && (
+                  <TouchableOpacity
+                    onPress={() => {
+                      haptic.tap();
+                      onExpiryChange(null);
+                    }}
+                    hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                  >
+                    <Feather
+                      name="x"
+                      size={14}
+                      color={theme.colors.textMuted}
+                    />
+                  </TouchableOpacity>
+                )}
+              </TouchableOpacity>
+
+              {showPicker && (
+                <DateTimePicker
+                  value={expiryDate ? new Date(expiryDate) : new Date()}
+                  mode="date"
+                  display={Platform.OS === "ios" ? "inline" : "default"}
+                  minimumDate={new Date(Date.now() + 86_400_000)} // tomorrow
+                  onChange={(_, date) => {
+                    setShowPicker(Platform.OS === "ios"); // Android auto-closes
+                    if (date) onExpiryChange(date.toISOString().split("T")[0]);
+                  }}
+                />
               )}
             </View>
           )}
@@ -405,5 +489,28 @@ const ss = StyleSheet.create({
     ...theme.typography.ios.footnote,
     fontWeight: "600",
     color: theme.colors.error,
+  },
+  expiryLabel: {
+    marginTop: theme.spacing.md,
+  },
+  dateBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.md,
+    borderRadius: theme.radius.md,
+    borderWidth: theme.hairline * 2,
+    borderColor: theme.colors.border,
+    backgroundColor: theme.colors.background,
+  },
+  dateBtnText: {
+    ...theme.typography.ios.subhead,
+    color: theme.colors.textMuted,
+    flex: 1,
+  },
+  dateBtnTextActive: {
+    color: theme.colors.textPrimary,
+    fontWeight: "600",
   },
 });

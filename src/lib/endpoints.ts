@@ -8,7 +8,7 @@ export const API_ENDPOINTS = {
   },
   HANDYMAN_PROFILE: {
     GET: "/serviceman/profile",
-    PUT: "/serviceman/profile",
+    POST: "/serviceman/profile",
   },
   CATEGORIES: {
     LIST: "/categories",

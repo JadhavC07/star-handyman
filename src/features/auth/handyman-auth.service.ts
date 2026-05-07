@@ -31,9 +31,7 @@ export const HandymanAuthService = {
         // prominently so testers can find it at a glance.
         const debugOtp = (r.data as any)?.debug_otp;
         if (__DEV__ && debugOtp) {
-          console.log(
-            `${TAG} 🔑 DEBUG OTP for ${payload.phone}: ${debugOtp}`,
-          );
+          console.log(`${TAG}DEBUG OTP for ${payload.phone}: ${debugOtp}`);
         }
         return r.data;
       })
@@ -48,16 +46,18 @@ export const HandymanAuthService = {
   },
 
   sendLoginOtp: (payload: ServicemanSendLoginOtpPayload) => {
-    devLog("sendLoginOtp →", API_ENDPOINTS.HANDYMAN_AUTH.SEND_LOGIN_OTP, payload);
+    devLog(
+      "sendLoginOtp →",
+      API_ENDPOINTS.HANDYMAN_AUTH.SEND_LOGIN_OTP,
+      payload,
+    );
     return client
       .post(API_ENDPOINTS.HANDYMAN_AUTH.SEND_LOGIN_OTP, payload)
       .then((r) => {
         devLog("sendLoginOtp ✓", r.data);
         const debugOtp = (r.data as any)?.debug_otp;
         if (__DEV__ && debugOtp) {
-          console.log(
-            `${TAG} 🔑 DEBUG OTP for ${payload.phone}: ${debugOtp}`,
-          );
+          console.log(`${TAG}DEBUG OTP for ${payload.phone}: ${debugOtp}`);
         }
         return r.data;
       })
@@ -115,15 +115,24 @@ export const HandymanAuthService = {
         const uri = rawUri.startsWith("file://") ? rawUri : `file://${rawUri}`;
         const ext = (uri.split(".").pop() || "jpg").toLowerCase();
         const mime =
-          ext === "png" ? "image/png"
-          : ext === "webp" ? "image/webp"
-          : ext === "heic" ? "image/heic"
-          : "image/jpeg";
+          ext === "png"
+            ? "image/png"
+            : ext === "webp"
+              ? "image/webp"
+              : ext === "heic"
+                ? "image/heic"
+                : "image/jpeg";
         form.append(`license_photos[${catId}]`, {
           uri,
           name: file.name || `license_${catId}.${ext}`,
           type: file.type || mime,
         } as any);
+      });
+    }
+
+    if (payload.expiry_dates) {
+      Object.entries(payload.expiry_dates).forEach(([categoryId, date]) => {
+        form.append(`expiry_dates[${categoryId}]`, date);
       });
     }
 
@@ -149,21 +158,19 @@ export const HandymanAuthService = {
   },
 
   updateProfile: (payload: ServicemanUpdateProfilePayload) => {
-    const url = API_ENDPOINTS.HANDYMAN_PROFILE.PUT;
+    const url = API_ENDPOINTS.HANDYMAN_PROFILE.POST;
     const form = new FormData();
     const debugParts: Record<string, unknown> = {};
 
-    // Laravel can't parse `multipart/form-data` on PUT requests, and
-    // React Native's XHR on Android drops the body for non-POST multipart
-    // uploads. Use Laravel's method-spoofing: POST with `_method=PUT`.
-    form.append("_method", "PUT");
-    debugParts["_method"] = "PUT";
 
     const inferMime = (ext: string) =>
-      ext === "png" ? "image/png"
-      : ext === "webp" ? "image/webp"
-      : ext === "heic" ? "image/heic"
-      : "image/jpeg";
+      ext === "png"
+        ? "image/png"
+        : ext === "webp"
+          ? "image/webp"
+          : ext === "heic"
+            ? "image/heic"
+            : "image/jpeg";
 
     Object.entries(payload).forEach(([key, val]) => {
       if (val === undefined || val === null) return;
@@ -189,9 +196,11 @@ export const HandymanAuthService = {
       }
 
       if (key === "levels" && val && typeof val === "object") {
-        Object.entries(val as Record<string, number>).forEach(([catId, lvl]) => {
-          form.append(`levels[${catId}]`, String(lvl));
-        });
+        Object.entries(val as Record<string, number>).forEach(
+          ([catId, lvl]) => {
+            form.append(`levels[${catId}]`, String(lvl));
+          },
+        );
         debugParts["levels"] = val;
         return;
       }
@@ -201,7 +210,9 @@ export const HandymanAuthService = {
           val as Record<string, { uri: string; name?: string; type?: string }>,
         ).forEach(([catId, file]) => {
           const rawUri = file.uri;
-          const uri = rawUri.startsWith("file://") ? rawUri : `file://${rawUri}`;
+          const uri = rawUri.startsWith("file://")
+            ? rawUri
+            : `file://${rawUri}`;
           const ext = (uri.split(".").pop() || "jpg").toLowerCase();
           form.append(`license_photos[${catId}]`, {
             uri,

@@ -29,6 +29,7 @@ const EMPTY_DRAFT: EnrollmentDraft = {
   selectedCategoryIds: [],
   levels: {},
   licensePhotos: {},
+  expiryDates: {},
 };
 
 type Step = "info" | "otp" | "categories";
@@ -64,7 +65,7 @@ const HandymanRegisterScreen: React.FC = () => {
   const errorMessage = activeError ? extractErrorMessage(activeError) : null;
 
   const enrollmentValid = (() => {
-    if (enrollment.selectedCategoryIds.length === 0) return true; // optional
+    if (enrollment.selectedCategoryIds.length === 0) return true;
     for (const id of enrollment.selectedCategoryIds) {
       if (!enrollment.levels[id]) return false;
     }
@@ -106,6 +107,10 @@ const HandymanRegisterScreen: React.FC = () => {
         license_photos:
           Object.keys(enrollment.licensePhotos).length > 0
             ? enrollment.licensePhotos
+            : undefined,
+        expiry_dates:
+          Object.keys(enrollment.expiryDates).length > 0
+            ? enrollment.expiryDates
             : undefined,
       },
       { onSuccess: () => router.replace("/(handyman)/(tabs)") },
@@ -192,10 +197,7 @@ const HandymanRegisterScreen: React.FC = () => {
                 {(["info", "otp", "categories"] as Step[]).map((s) => (
                   <View
                     key={s}
-                    style={[
-                      styles.stepDot,
-                      step === s && styles.stepDotActive,
-                    ]}
+                    style={[styles.stepDot, step === s && styles.stepDotActive]}
                   />
                 ))}
               </View>
@@ -233,7 +235,11 @@ const HandymanRegisterScreen: React.FC = () => {
                   </View>
 
                   <View style={[wrapperStyle("phone"), { marginTop: 14 }]}>
-                    <Feather name="phone" size={18} color={iconColor("phone")} />
+                    <Feather
+                      name="phone"
+                      size={18}
+                      color={iconColor("phone")}
+                    />
                     <Text style={styles.countryCode}>+1</Text>
                     <View style={styles.separator} />
                     <TextInput

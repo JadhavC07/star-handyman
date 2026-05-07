@@ -1,12 +1,11 @@
-import { NotificationService } from '@/src/features/notifications/notification.service';
-import { useAuthStore } from '@/src/features/auth/auth.store';
-import { fcm } from '@/src/lib/fcm';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Platform } from 'react-native';
+import { useAuthStore } from "@/src/features/auth/auth.store";
+import { NotificationService } from "@/src/features/notifications/notification.service";
+import { fcm } from "@/src/lib/fcm";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const NOTIF_KEYS = {
-  all:    ['notifications'] as const,
-  unread: ['notifications', 'unread'] as const,
+  all: ["notifications"] as const,
+  unread: ["notifications", "unread"] as const,
 };
 
 // ─── Register FCM token after login ───────────────────────────────────────────
@@ -28,9 +27,8 @@ export const useRegisterFcmToken = () => {
 export const useRemoveFcmToken = () => {
   return useMutation({
     mutationFn: async () => {
-      const { default: messaging } = await import(
-        '@react-native-firebase/messaging'
-      );
+      const { default: messaging } =
+        await import("@react-native-firebase/messaging");
       const token = await messaging().getToken();
       return NotificationService.removeToken(token);
     },

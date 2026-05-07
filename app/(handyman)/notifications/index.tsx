@@ -7,7 +7,8 @@ import {
   useUnreadCount,
 } from "@/src/hooks/notifications/useNotifications";
 import { theme } from "@/src/theme/theme";
-import { Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
@@ -18,6 +19,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function NotificationItem({
@@ -81,11 +83,22 @@ export default function NotificationsScreen() {
     <SafeAreaView style={ss.safe} edges={["top"]}>
       <View style={ss.header}>
         <Text style={ss.title}>Notifications</Text>
-        {(unreadData?.count ?? 0) > 0 && (
-          <TouchableOpacity onPress={() => markAll.mutate()}>
-            <Text style={ss.markAll}>Mark all read</Text>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+          {(unreadData?.count ?? 0) > 0 && (
+            <TouchableOpacity onPress={() => markAll.mutate()}>
+              <Text style={ss.markAll}>Mark all read</Text>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity
+            onPress={() => router.push("/(handyman)/notifications/settings")}
+          >
+            <Feather
+              name="settings"
+              size={20}
+              color={theme.colors.textSecondary}
+            />
           </TouchableOpacity>
-        )}
+        </View>
       </View>
 
       {isLoading ? (
